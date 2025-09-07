@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, List, Typography, Divider, Button, message, Space, } from "antd";
+import { Card, List, Typography, Divider, Button, message, Space } from "antd";
 import "./index.scss";
 import TodoItem from "@/components/TodoItem";
 import AddTodoForm from "@/components/AddTodoForm";
@@ -12,24 +12,22 @@ import ConfirmModal from "@/components/ComfirmModal";
 const { Title } = Typography;
 
 export default function TodoApp() {
-  const { todos, filter, completeMany, removeMany } = useTodoStore();
+  const { todos, filter, toggleTodo, removeTodo } = useTodoStore();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // modal state
   const [open, setOpen] = useState(false);
 
-  // thông báo thành công
-  const [messageApi, contextHolder] = message.useMessage();
-
-  // lọc công việc theo trạng thái
   const filteredTodos = todos.filter((todo) => {
     if (filter === "active") return !todo.completed;
     if (filter === "completed") return todo.completed;
     return true;
   });
 
-  // chọn / bỏ chọn công việc
+  const [messageApi, contextHolder] = message.useMessage();
+
+  // chọn / bỏ chọn 1 công việc
   const handleSelect = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
@@ -38,8 +36,7 @@ export default function TodoApp() {
 
   // bấm Hoàn thành
   const handleComplete = () => {
-    if (selectedIds.length === 0) return;
-    completeMany(selectedIds);
+    selectedIds.forEach((id) => toggleTodo(id));
     messageApi.success("Các công việc đã được hoàn thành!");
     setSelectedIds([]);
   };
@@ -52,7 +49,7 @@ export default function TodoApp() {
 
   // xác nhận Xóa
   const confirmDelete = () => {
-    removeMany(selectedIds);
+    selectedIds.forEach((id) => removeTodo(id));
     messageApi.success("Đã xóa công việc thành công!");
     setSelectedIds([]);
     setOpen(false);
@@ -64,11 +61,9 @@ export default function TodoApp() {
       <Card className="todo-card">
         <Title level={2} className="todo-title">📝 Todo App</Title>
         <Divider />
-
-        {/* Form thêm công việc */}
         <AddTodoForm />
-        {/* Bộ lọc trạng thái */}
         <TodoStatusFilter />
+
         {/* 2 nút Hoàn thành + Xóa */}
         <Space style={{ margin: "16px 0" }}>
           <Button
@@ -87,7 +82,6 @@ export default function TodoApp() {
           </Button>
         </Space>
 
-        {/* Danh sách công việc */}
         <List
           className="todo-list"
           bordered
