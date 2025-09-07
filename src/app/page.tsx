@@ -1,95 +1,119 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { Card, List, Typography, Divider, Button, message, Space, } from "antd";
+import "./index.scss";
+import TodoItem from "@/components/TodoItem";
+import AddTodoForm from "@/components/AddTodoForm";
+import { useTodoStore } from "@/store/todoStore";
+import TodoStatusFilter from "@/components/TodoStatusFilter";
+import ConfirmModal from "@/components/ComfirmModal";
+
+const { Title } = Typography;
+
+export default function TodoApp() {
+  const { todos, filter, completeMany, removeMany } = useTodoStore();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // modal state
+  const [open, setOpen] = useState(false);
+
+  // thông báo thành công
+  const [messageApi, contextHolder] = message.useMessage();
+
+  // lọc công việc theo trạng thái
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
+
+  // chọn / bỏ chọn công việc
+  const handleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
+  };
+
+  // bấm Hoàn thành
+  const handleComplete = () => {
+    if (selectedIds.length === 0) return;
+    completeMany(selectedIds);
+    messageApi.success("Các công việc đã được hoàn thành!");
+    setSelectedIds([]);
+  };
+
+  // bấm Xóa → mở modal
+  const handleDelete = () => {
+    if (selectedIds.length === 0) return;
+    setOpen(true);
+  };
+
+  // xác nhận Xóa
+  const confirmDelete = () => {
+    removeMany(selectedIds);
+    messageApi.success("Đã xóa công việc thành công!");
+    setSelectedIds([]);
+    setOpen(false);
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="todo-container">
+      {contextHolder}
+      <Card className="todo-card">
+        <Title level={2} className="todo-title">📝 Todo App</Title>
+        <Divider />
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Form thêm công việc */}
+        <AddTodoForm />
+        {/* Bộ lọc trạng thái */}
+        <TodoStatusFilter />
+        {/* 2 nút Hoàn thành + Xóa */}
+        <Space style={{ margin: "16px 0" }}>
+          <Button
+            type="primary"
+            disabled={selectedIds.length === 0}
+            onClick={handleComplete}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            Hoàn thành
+          </Button>
+          <Button
+            danger
+            disabled={selectedIds.length === 0}
+            onClick={handleDelete}
+          >
+            Xóa
+          </Button>
+        </Space>
+
+        {/* Danh sách công việc */}
+        <List
+          className="todo-list"
+          bordered
+          dataSource={filteredTodos}
+          renderItem={(todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              editingId={editingId}
+              setEditingId={setEditingId}
+              messageApi={messageApi}
+              selected={selectedIds.includes(todo.id)}
+              onSelect={handleSelect}
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          )}
+        />
+      </Card>
+
+      {/* Modal xác nhận xóa */}
+      <ConfirmModal
+        open={open}
+        confirmLoading={false}
+        modalText="Bạn có chắc muốn xóa các công việc đã chọn không?"
+        onConfirm={confirmDelete}
+        onCancel={() => setOpen(false)}
+      />
     </div>
   );
 }

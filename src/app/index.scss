@@ -1,0 +1,53 @@
+.todo-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 100px;
+  min-height: 100vh;
+  background: linear-gradient( #718cd5, #ffffff);
+
+  .todo-card {
+    width: 600px;
+    border-radius: 16px;
+    padding: 20px;
+    background: #ffffff;
+
+    .todo-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #0f182d;
+    }
+
+    .ant-divider {
+      margin: 12px 0 20px;
+    }
+
+    .todo-input-group {
+      display: flex;
+      margin-bottom: 16px;
+    }
+
+    .todo-filter {
+      margin: 10px 0 20px;/* trêm- trái,phải-dưới*/
+      width: 100%;
+    }
+
+    .todo-list {
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+
+      .ant-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        
+        &:hover {
+          background: #cad0e3;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  
+
+  &:hover {
+    background: #f7f9fc;
+  }
+
+  // Bên trái: checkbox + text
+  .todo-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    .todo-text {
+      
+      font-size: 15px;
+      transition: color 0.2s ease;
+      word-break: break-word;
+
+      &:hover {
+        color: #1677ff; // màu xanh ant design khi hover
+      }
+    }
+  }
+
+  // Trạng thái hoàn thành
+  &.completed {
+    .todo-text {
+      text-decoration: line-through;
+      color: #9ca3af; // chữ xám
+    }
+  }
+
+  // Bên phải: các nút action
+  .todo-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .ant-btn-link {
+      padding: px;
+      font-size: 14px;
+      border-radius: 6px;
+
+      &:hover {
+        background: #eff0f5;
+      }
+
+      &.ant-btn-dangerous:hover {
+        background: #fff1f0;
+      }
+    }
+  }
+  /* Ensure modals are styled consistently with the app */
+.ant-modal-confirm {
+  .ant-modal-confirm-title {
+    font-weight: bold;
+  }
+  .ant-modal-confirm-content {
+    font-size: 16px;
+  }
+}
+
+/* Style for completed todos */
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #888;
+}
+}
