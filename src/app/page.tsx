@@ -15,6 +15,7 @@ export default function TodoApp() {
   const { todos, filter, toggleTodo, removeTodo } = useTodoStore();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { completeMany } = useTodoStore();
 
   // modal state
   const [open, setOpen] = useState(false);
@@ -35,10 +36,16 @@ export default function TodoApp() {
   };
 
   // bấm Hoàn thành
+  // const handleComplete = () => {
+  //   selectedIds.forEach((id) => toggleTodo(id));
+  //   messageApi.success("Các công việc đã được hoàn thành!");
+  //   setSelectedIds([]);
+  // };
+
   const handleComplete = () => {
-    selectedIds.forEach((id) => toggleTodo(id));
-    messageApi.success("Các công việc đã được hoàn thành!");
+    completeMany(selectedIds);
     setSelectedIds([]);
+    messageApi.success("Đã hoàn thành công việc được chọn!");
   };
 
   // bấm Xóa → mở modal
@@ -55,6 +62,10 @@ export default function TodoApp() {
     setOpen(false);
   };
 
+  const hasIncompleteSelected = selectedIds.some(
+    (id) => !todos.find((t) => t.id === id)?.completed
+  );
+
   return (
     <div className="todo-container">
       {contextHolder}
@@ -63,16 +74,16 @@ export default function TodoApp() {
         <Divider />
         <AddTodoForm />
         <TodoStatusFilter />
-
-        {/* 2 nút Hoàn thành + Xóa */}
-        <Space style={{ margin: "16px 0" }}>
+        <Space style={{ display: "flex", justifyContent: "flex-end", margin: "16px 0" }}>
+          {/* {hasIncompleteSelected && ( */}
           <Button
             type="primary"
-            disabled={selectedIds.length === 0}
+            disabled={!hasIncompleteSelected}
             onClick={handleComplete}
           >
             Hoàn thành
           </Button>
+          {/* )} */}
           <Button
             danger
             disabled={selectedIds.length === 0}

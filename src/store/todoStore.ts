@@ -14,7 +14,7 @@ interface TodoState {
   filter: 'all' | 'active' | 'completed';
   addTodo: (text: string) => void;
   editTodo: (id: string, text: string) => void;
-  toggleTodo: (id: string) => void;
+  // toggleTodo: (id: string) => void;
   removeTodo: (id: string) => void;
   completeMany: (ids: string[]) => void;
   removeMany: (ids: string[]) => void;
@@ -39,12 +39,12 @@ export const useTodoStore = create<TodoState>()(
           ),
         })),
 
-      toggleTodo: (id) =>
-        set((state) => ({
-          todos: state.todos.map((t) =>
-            t.id === id ? { ...t, completed: !t.completed } : t
-          ),
-        })),
+      // toggleTodo: (id) =>
+      //   set((state) => ({
+      //     todos: state.todos.map((t) =>
+      //       t.id === id ? { ...t, completed: !t.completed } : t
+      //     ),
+      //   })),
 
       removeTodo: (id) =>
         set((state) => ({
