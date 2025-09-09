@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Typography, Divider, Table, Input, Checkbox, Button, Space } from "antd";
+import {
+  Card,
+  Typography,
+  Divider,
+  Table,
+  Input,
+  Checkbox,
+  Button,
+  Space,
+  message,
+} from "antd";
 import "./index.scss";
 import AddTodoForm from "@/components/AddTodoForm";
 import { useTodoStore, ITodo } from "@/store/todoStore";
@@ -9,12 +19,14 @@ import TodoStatusFilter from "@/components/TodoStatusFilter";
 import { EditOutlined, SaveOutlined, DeleteOutlined } from "@ant-design/icons";
 import TodoActions from "@/components/TodoActions";
 import ConfirmModal from "@/components/ComfirmModal";
+import SearchTodo from "@/components/SearchTodo";
 
 const { Title } = Typography;
 
 export default function TodoApp() {
   const { todos, filter, editTodo, removeTodo, completeMany } = useTodoStore();
 
+  const [messageApi, contextHolder] = message.useMessage();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -22,16 +34,21 @@ export default function TodoApp() {
   const [modalType, setModalType] = useState<"save" | "delete" | null>(null);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [deleteIds, setDeleteIds] = useState<string[] | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredTodos = todos
+    .filter((todo) => {
+      const now = new Date();
+      const isExpired =
+        todo.deadline && new Date(todo.deadline) < now && !todo.completed;
 
-  const filteredTodos = todos.filter((todo) => {
-    const now = new Date();
-    const isExpired = todo.deadline ? new Date(todo.deadline) < now && !todo.completed : false;
-
-    if (filter === "active") return !todo.completed && !isExpired;
-    if (filter === "completed") return todo.completed;
-    if (filter === "expired") return isExpired;
-    return true;
-  });
+      if (filter === "active") return !todo.completed && !isExpired;
+      if (filter === "completed") return todo.completed;
+      if (filter === "expired") return isExpired;
+      return true;
+    })
+    .filter((todo) =>
+      todo.text.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handleSelect = (id: string) => {
     setSelectedIds((prev) =>
@@ -45,6 +62,10 @@ export default function TodoApp() {
   };
 
   const openSaveModal = (id: string) => {
+    if (!inputValue.trim()) {
+      messageApi.error("Vui lòng nhập thông tin!");
+      return;
+    }
     setCurrentId(id);
     setModalType("save");
     setModalOpen(true);
@@ -65,6 +86,7 @@ export default function TodoApp() {
     setModalOpen(false);
     setCurrentId(null);
     setModalType(null);
+    messageApi.success("Sửa công việc thành công!");
   };
 
   const handleDeleteConfirm = () => {
@@ -74,6 +96,7 @@ export default function TodoApp() {
     setDeleteIds(null);
     setModalOpen(false);
     setModalType(null);
+    messageApi.success("Xóa công việc thành công!");
   };
 
   const columns = [
@@ -82,7 +105,10 @@ export default function TodoApp() {
       dataIndex: "id",
       width: 60,
       render: (id: string) => (
-        <Checkbox checked={selectedIds.includes(id)} onChange={() => handleSelect(id)} />
+        <Checkbox
+          checked={selectedIds.includes(id)}
+          onChange={() => handleSelect(id)}
+        />
       ),
     },
     {
@@ -99,7 +125,9 @@ export default function TodoApp() {
           <span
             style={{
               color:
-                todo.deadline && new Date(todo.deadline) < new Date() && !todo.completed
+                todo.deadline &&
+                  new Date(todo.deadline) < new Date() &&
+                  !todo.completed
                   ? "red"
                   : todo.completed
                     ? "#999"
@@ -138,7 +166,11 @@ export default function TodoApp() {
       render: (_: string, todo: ITodo) => (
         <Space>
           {editingId === todo.id ? (
-            <Button type="link" icon={<SaveOutlined />} onClick={() => openSaveModal(todo.id)} />
+            <Button
+              type="link"
+              icon={<SaveOutlined />}
+              onClick={() => openSaveModal(todo.id)}
+            />
           ) : (
             <Button
               type="link"
@@ -160,12 +192,15 @@ export default function TodoApp() {
 
   return (
     <div className="todo-container">
+      {contextHolder}
       <Card className="todo-card">
         <Title level={2} className="todo-title">
           📝 Todo App
         </Title>
         <Divider />
-        <AddTodoForm />
+        <AddTodoForm messageApi={messageApi} />
+        <SearchTodo onSearch={setSearchTerm} />
+
         <TodoStatusFilter />
 
         <TodoActions
@@ -190,7 +225,8 @@ export default function TodoApp() {
           modalText={
             modalType === "save"
               ? "Bạn có muốn lưu công việc này không?"
-              : `Bạn có chắc muốn xóa ${deleteIds?.length || 0} công việc không?`
+              : `Bạn có chắc muốn xóa ${deleteIds?.length || 0
+              } công việc không?`
           }
           onConfirm={modalType === "save" ? handleSaveConfirm : handleDeleteConfirm}
           onCancel={() => {

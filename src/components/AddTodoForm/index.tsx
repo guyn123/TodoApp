@@ -1,34 +1,38 @@
-import { Button, Input, Space, DatePicker } from 'antd';
-import React, { useState } from 'react';
-import { useTodoStore } from '@/store/todoStore';
-import dayjs from 'dayjs';
+import { Button, Input, Space, DatePicker, message } from "antd";
+import React, { useState } from "react";
+import { useTodoStore } from "@/store/todoStore";
+import dayjs from "dayjs";
 
-function AddTodoForm() {
-  const [newTodo, setNewTodo] = useState('');
+function AddTodoForm({ messageApi }: { messageApi: any }) {
+  const [newTodo, setNewTodo] = useState("");
   const [deadline, setDeadline] = useState<dayjs.Dayjs | null>(null);
   const { addTodo } = useTodoStore();
 
   const handleAdd = () => {
-    if (!newTodo.trim()) return;
+    if (!newTodo.trim()) {
+      messageApi.error("Vui lòng nhập thông tin!");
+      return;
+    }
     addTodo(newTodo, deadline ? deadline.toISOString() : null);
-    setNewTodo('');
+    setNewTodo("");
     setDeadline(null);
+    messageApi.success("Thêm công việc thành công!");
   };
 
   return (
-    <Space.Compact className="todo-input-group" style={{ width: '100%' }}>
+    <Space.Compact className="todo-input-group" style={{ width: "100%" }}>
       <Input
         placeholder="Nhập công việc..."
         value={newTodo}
         onChange={(e) => setNewTodo(e.target.value)}
         onPressEnter={handleAdd}
-        style={{ width: '50%' }}
+        style={{ width: "50%" }}
       />
       <DatePicker
         placeholder="Deadline"
         value={deadline}
         onChange={(val) => setDeadline(val)}
-        style={{ width: '50%' }}
+        style={{ width: "50%", borderRadius: "8px" }}
         showTime
       />
       <Button type="primary" onClick={handleAdd}>
