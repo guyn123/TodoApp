@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { List, Button, Input, Typography, Checkbox } from "antd";
+import React, { useEffect, useState } from "react";
+import { List, Typography, Checkbox, Input, Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import "./style.scss";
-import { ITodo, useTodoStore } from "@/store/todoStore";
-import ConfirmModal from "../ComfirmModal";
+import { ITodo } from "@/store/todoStore";
 
 interface ITodoItemProps {
   todo: ITodo;
   editingId: string | null;
   setEditingId: (id: string | null) => void;
-  messageApi: any;
   selected: boolean;
   onSelect: (id: string) => void;
 }
@@ -20,81 +18,57 @@ export default function TodoItem({
   todo,
   editingId,
   setEditingId,
-  messageApi,
   selected,
   onSelect,
 }: ITodoItemProps) {
-  const { editTodo } = useTodoStore();
   const [inputValue, setInputValue] = useState(todo.text);
 
-  // modal state (chỉ cho lưu)
-  const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  useEffect(() => {
+    if (editingId !== todo.id) {
+      setInputValue(todo.text);
+    }
+  }, [editingId, todo.id, todo.text]);
 
-  const showSaveModal = () => {
-    setOpen(true);
-  };
-
-  const handleOk = () => {
-    setConfirmLoading(true);
-    editTodo(todo.id, inputValue);
-    setEditingId(null);
-    messageApi.success("Bạn đã sửa công việc thành công!");
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 100);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
+  const isExpired = todo.deadline
+    ? new Date(todo.deadline) < new Date() && !todo.completed
+    : false;
 
   return (
-    <>
-      <List.Item className={`todo-item ${todo.completed ? "completed" : ""}`}>
-        <div className="todo-left">
-          <Checkbox
-            checked={selected}
-            onChange={() => onSelect(todo.id)}
-            style={{ marginRight: 9 }}
+    <List.Item className={`todo-item ${todo.completed ? "completed" : ""}`}>
+      <div className="todo-left">
+        <Checkbox
+          checked={selected}
+          onChange={() => onSelect(todo.id)}
+          style={{ marginRight: 9 }}
+          disabled={todo.completed}
+        />
+        {editingId === todo.id ? (
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={todo.completed}
           />
-          {editingId === todo.id ? (
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onPressEnter={showSaveModal}
-            />
-          ) : (
-            <Typography.Text className="todo-text">{todo.text}</Typography.Text>
-          )}
-        </div>
+        ) : (
+          <Typography.Text
+            delete={todo.completed}
+            style={{
+              color: isExpired ? "red" : todo.completed ? "#999" : "#000",
+            }}
+          >
+            {todo.text}
+          </Typography.Text>
+        )}
+      </div>
 
-        <div className="todo-actions">
-          {editingId === todo.id ? (
-            <Button type="link" onClick={showSaveModal}>
-              Lưu
-            </Button>
-          ) : (
-            !todo.completed && (
-              <Button
-                type="link"
-                icon={<EditOutlined />}
-                onClick={() => setEditingId(todo.id)}
-              />
-            )
-          )}
-        </div>
-      </List.Item>
-
-      {/* ConfirmModal cho lưu */}
-      <ConfirmModal
-        open={open}
-        confirmLoading={confirmLoading}
-        modalText="Bạn có muốn lưu công việc này không?"
-        onConfirm={handleOk}
-        onCancel={handleCancel}
-      />
-    </>
+      <div className="todo-actions">
+        {!todo.completed && editingId !== todo.id && (
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => setEditingId(todo.id)}
+          />
+        )}
+      </div>
+    </List.Item>
   );
 }

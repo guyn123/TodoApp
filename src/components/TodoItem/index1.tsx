@@ -4,7 +4,7 @@
 // import { List, Button, Input, Typography, Checkbox, Modal } from "antd";
 // import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 // import "./style.scss";
-// import { ITodo, useTodoStore } from "@/store/todoStore";
+// import { ITodo, useTodoStore } from "@/store/todoStore1";
 // import ConfirmModal from "../ComfirmModal";
 
 // interface ITodoItemProps {

@@ -7,8 +7,8 @@ interface IConfirmModal {
   open: boolean;
   confirmLoading: boolean;
   modalText: string;
-  onConfirm: () => void; // gọi khi bấm "Có"
-  onCancel: () => void;  // gọi khi bấm "Không"
+  onConfirm: () => void;
+  onCancel: () => void;
   title?: string;
   okText?: string;
   cancelText?: string;

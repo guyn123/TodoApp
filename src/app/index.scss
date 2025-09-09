@@ -2,50 +2,99 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 100px;
+  padding: 80px 20px;
   min-height: 100vh;
-  background: linear-gradient( #718cd5, #ffffff);
+  background: linear-gradient(135deg, #95a3e9, #f690a4); // gradient bắt mắt
 
   .todo-card {
-    width: 600px;
-    border-radius: 16px;
-    padding: 20px;
+    width: 650px;
+    border-radius: 20px;
+    padding: 24px;
     background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
 
     .todo-title {
       text-align: center;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
-      color: #0f182d;
+      color: #1f2d4d;
+      margin-bottom: 8px;
     }
 
     .ant-divider {
-      margin: 12px 0 20px;
+      margin: 16px 0 24px;
+      border-color: #e0e6f6;
     }
 
     .todo-input-group {
       display: flex;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 18px;
+
+      input {
+        border-radius: 0px;
+        ;
+      }
+
+      button {
+        border-radius: 0px;
+      }
     }
 
     .todo-filter {
-      margin: 10px 0 20px;/* trêm- trái,phải-dưới*/
+      margin: 12px 0 24px;
       width: 100%;
+
+      .ant-select {
+        width: 100%;
+      }
     }
 
     .todo-list {
-      margin-top: 12px;
-      border-radius: 12px;
+      margin-top: 14px;
+      border-radius: 14px;
       overflow: hidden;
+      border: 1px solid #f0f0f0;
 
       .ant-list-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 16px;
-        
+        padding: 14px 18px;
+        background: #fafafa;
+        transition: background 0.2s ease;
+
+        &:nth-child(even) {
+          background: #ffffff;
+        }
+
         &:hover {
-          background: #cad0e3;
+          background: #eef2ff;
+        }
+
+        .todo-text {
+          font-size: 15px;
+          color: #333;
+          transition: color 0.2s ease;
+
+          &.completed {
+            color: #999;
+            text-decoration: line-through;
+          }
+        }
+
+        .todo-actions {
+          display: flex;
+          gap: 8px;
+
+          button {
+            border-radius: 8px;
+          }
         }
       }
     }

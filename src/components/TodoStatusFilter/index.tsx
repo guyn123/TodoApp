@@ -1,6 +1,7 @@
-import { Select } from 'antd'
-import React from 'react'
+import { Select } from 'antd';
+import React from 'react';
 import { useTodoStore } from '@/store/todoStore';
+
 function TodoStatusFilter() {
   const { filter, setFilter } = useTodoStore();
   return (
@@ -12,9 +13,10 @@ function TodoStatusFilter() {
         { value: 'all', label: 'Tất cả' },
         { value: 'active', label: 'Chưa hoàn thành' },
         { value: 'completed', label: 'Đã hoàn thành' },
+        { value: 'expired', label: 'Đã hết hạn' },
       ]}
     />
-  )
+  );
 }
 
-export default TodoStatusFilter
+export default TodoStatusFilter;
