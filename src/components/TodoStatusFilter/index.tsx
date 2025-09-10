@@ -5,6 +5,7 @@ import { useTodoStore } from '@/store/todoStore';
 function TodoStatusFilter() {
   const { filter, setFilter } = useTodoStore();
   return (
+
     <Select
       className="todo-filter"
       value={filter}
@@ -16,6 +17,7 @@ function TodoStatusFilter() {
         { value: 'expired', label: 'Đã hết hạn' },
       ]}
     />
+
   );
 }
 

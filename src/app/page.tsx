@@ -162,7 +162,7 @@ export default function TodoApp() {
       title: "Deadline",
       dataIndex: "deadline",
       render: (date: string | null, todo: ITodo) => {
-        if (!date) return "—";
+        if (!date) return ".  .  .";
         const isExpired = new Date(date) < new Date() && !todo.completed;
         return (
           <span style={{ color: isExpired ? "red" : "#000" }}>
@@ -237,9 +237,7 @@ export default function TodoApp() {
         <Divider />
         <AddTodoForm messageApi={messageApi} />
         <SearchTodo onSearch={setSearchTerm} />
-
         <TodoStatusFilter />
-
         <TodoActions
           todos={todos}
           selectedIds={selectedIds}

@@ -1,0 +1,19 @@
+.search-wrapper {
+    width: 100%;
+    display: inline-block;
+    transition: transform 0.5s ease;
+
+    &:hover {
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

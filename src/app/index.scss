@@ -31,9 +31,9 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.2s ease;
 
-    &:hover {
-      transform: translateY(-3px);
-    }
+    // &:hover {
+    //   transform: translateY(-3px);
+    // }
 
     .todo-title {
       text-align: center;
@@ -41,7 +41,26 @@
       font-weight: bold;
       color: #1f2d4d;
       margin-bottom: 8px;
+
+      cursor: pointer;
+      transition: transform 0.5s ease;
+
+      &:hover {
+        animation: spin 1s linear infinite;
+      }
     }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+
 
     //chữ dài xuống dòng,ko bị tràn
     .todo-table {
