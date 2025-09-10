@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  Typography,
-  Divider,
-  Table,
-  Input,
-  Checkbox,
-  Button,
-  Space,
-  message,
-} from "antd";
+import { Card, Typography, Divider, Table, Input, Checkbox, Button, Space, message, } from "antd";
 import "./index.scss";
 import AddTodoForm from "@/components/AddTodoForm";
 import { useTodoStore, ITodo } from "@/store/todoStore";
@@ -99,6 +89,12 @@ export default function TodoApp() {
     messageApi.success("Xóa công việc thành công!");
   };
 
+  const priorityOrder: Record<string, number> = {
+    Low: 1,
+    Medium: 2,
+    High: 3,
+    Urgent: 4,
+  };
   const columns = [
     {
       title: "Chọn",
@@ -155,6 +151,31 @@ export default function TodoApp() {
         return (
           <span style={{ color: isExpired ? "red" : "#000" }}>
             {new Date(date).toLocaleString()}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Ưu tiên",
+      dataIndex: "priority",
+      sorter: (a: ITodo, b: ITodo) =>
+        priorityOrder[a.priority] - priorityOrder[b.priority],
+      render: (priority: ITodo["priority"]) => {
+        const colorMap: Record<ITodo["priority"], string> = {
+          Low: "#52c41a",
+          Medium: "#1890ff",
+          High: "#faad14",
+          Urgent: "#f5222d",
+        };
+        return (
+          <span style={{ color: colorMap[priority], fontWeight: "bold" }}>
+            {priority === "Low"
+              ? "Thấp"
+              : priority === "Medium"
+                ? "Trung bình"
+                : priority === "High"
+                  ? "Cao"
+                  : "Khẩn cấp"}
           </span>
         );
       },

@@ -8,13 +8,14 @@ export interface ITodo {
   completed: boolean;
   createdAt: string;       // ngày tạo (ISO string)
   deadline: string | null; // ngày hết hạn (ISO string)
+  priority: "Low" | "Medium" | "High" | "Urgent";
 }
 
 interface TodoState {
   todos: ITodo[];
   filter: 'all' | 'active' | 'completed' | 'expired';
-  addTodo: (text: string, deadline: string | null) => void;
-  editTodo: (id: string, text: string, deadline?: string | null) => void;
+  addTodo: (text: string, deadline: string | null, priority: ITodo["priority"]) => void;
+  editTodo: (id: string, text: string, deadline?: string | null, priority?: ITodo["priority"]) => void;
   removeTodo: (id: string) => void;
   completeMany: (ids: string[]) => void;
   removeMany: (ids: string[]) => void;
@@ -27,7 +28,7 @@ export const useTodoStore = create<TodoState>()(
       todos: [],
       filter: 'all',
 
-      addTodo: (text, deadline) =>
+      addTodo: (text, deadline, priority) =>
         set((state) => ({
           todos: [
             ...state.todos,
@@ -37,16 +38,20 @@ export const useTodoStore = create<TodoState>()(
               completed: false,
               createdAt: new Date().toISOString(),
               deadline,
+              priority,
             },
           ],
         })),
 
-      editTodo: (id, text, deadline) =>
+      editTodo: (id, text, deadline, priority) =>
         set((state) => ({
           todos: state.todos.map((t) =>
-            t.id === id ? { ...t, text, deadline: deadline ?? t.deadline } : t
+            t.id === id
+              ? { ...t, text, deadline: deadline ?? t.deadline, priority: priority ?? t.priority }
+              : t
           ),
         })),
+
 
       removeTodo: (id) =>
         set((state) => ({

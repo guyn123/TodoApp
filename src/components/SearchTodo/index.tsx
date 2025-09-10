@@ -24,7 +24,7 @@ export default function SearchTodo({ onSearch }: SearchTodoProps) {
             onChange={handleChange}
             style={{ width: "100%", marginBottom: 16, borderRadius: 10 }}
             allowClear
-            prefix={<SearchOutlined style={{ color: "#999" }} />} // icon tìm kiếm
+            prefix={<SearchOutlined style={{ color: "#9b0b0bff" }} />} // icon tìm kiếm
         />
     );
 }
