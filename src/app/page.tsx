@@ -25,6 +25,7 @@ export default function TodoApp() {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [deleteIds, setDeleteIds] = useState<string[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [pageSize, setPageSize] = useState(5);
   const filteredTodos = todos
     .filter((todo) => {
       const now = new Date();
@@ -97,7 +98,21 @@ export default function TodoApp() {
   };
   const columns = [
     {
-      title: "Chọn",
+      title: (
+        <Checkbox
+          checked={selectedIds.length === filteredTodos.length && filteredTodos.length > 0}
+          indeterminate={selectedIds.length > 0 && selectedIds.length < filteredTodos.length}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedIds(filteredTodos.map((todo) => todo.id));
+            } else {
+              setSelectedIds([]);
+            }
+          }}
+        >
+          Chọn
+        </Checkbox>
+      ),
       dataIndex: "id",
       width: 60,
       render: (id: string) => (
@@ -110,6 +125,7 @@ export default function TodoApp() {
     {
       title: "Công việc",
       dataIndex: "text",
+      className: "todo-text",
       render: (_: string, todo: ITodo) =>
         editingId === todo.id ? (
           <Input
@@ -238,7 +254,16 @@ export default function TodoApp() {
           className="todo-table"
           columns={columns}
           dataSource={filteredTodos}
-          pagination={false}
+          pagination={{
+            pageSize,
+            showSizeChanger: true,
+            pageSizeOptions: ["5", "10", "20"],
+            showQuickJumper: true,
+            position: ["bottomCenter"],
+            onShowSizeChange: (current, size) => {
+              setPageSize(size); // 👈 cập nhật pageSize khi chọn
+            },
+          }}
         />
         <ConfirmModal
           open={modalOpen}

@@ -6,8 +6,25 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #95a3e9, #f690a4); // gradient bắt mắt
 
+
+  .ant-pagination {
+    font-size: 12px;
+    gap: 4px;
+    white-space: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .ant-pagination .ant-pagination-item {
+    min-width: 0px;
+    /* nút số nhỏ hơn */
+    height: 26px;
+    line-height: 24px;
+  }
+
   .todo-card {
-    width: 650px;
+    width: 750px;
     border-radius: 20px;
     padding: 24px;
     background: #ffffff;
@@ -26,12 +43,20 @@
       margin-bottom: 8px;
     }
 
+    //chữ dài xuống dòng,ko bị tràn
+    .todo-table {
+      .ant-table-tbody>tr>td.todo-text {
+        white-space: normal;
+        word-break: break-word;
+        max-width: 200px;
+
+      }
+    }
+
     .ant-divider {
       margin: 16px 0 24px;
       border-color: #0c58c2;
     }
-
-
 
     .todo-filter {
       margin: 12px 0 24px;
