@@ -1,36 +1,111 @@
 .weather-card {
     margin-top: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    border-radius: 12px;
-}
+    // Background bao trọn
+    background-image: url('https://imgcdn.stablediffusionweb.com/2024/3/19/49925953-5f53-4394-9e6a-52b3759cebc4.jpg'); // đường dẫn hình nền của bạn
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
 
-.weather-actions {
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
 
-.weather-input {
-    width: 300px;
-}
+    .ant-card-head {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
 
-.weather-loading {
-    margin-top: 20px;
-}
+        color: #fff;
+        border-bottom: none;
+    }
 
-.weather-result {
-    margin-top: 16px;
-    text-align: center;
-}
+    .weather-actions {
+        margin: 12px 0 20px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
 
-.weather-icon {
-    width: 100px;
-    height: 100px;
-}
+        .weather-input {
+            width: 260px;
+            border-radius: 8px;
+        }
 
-.weather-temp {
-    font-size: 24px;
-    display: block;
-    margin: 8px 0;
+        button {
+            border-radius: 8px;
+        }
+    }
+
+    .weather-loading {
+        margin: 24px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .weather-result {
+        margin-top: 12px;
+        padding: 16px;
+        // lớp overlay trong suốt để nội dung nổi bật hơn
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+
+        .weather-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+
+            @media (max-width: 600px) {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+
+        .weather-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .weather-icon {
+                width: 90px;
+                height: 90px;
+                margin-top: 6px;
+            }
+
+            h4 {
+                margin: 0;
+                color: #ffd166;
+                font-size: 25px;
+                font-weight: 600;
+            }
+        }
+
+        .weather-right {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+
+            .weather-temp {
+                font-size: 28px;
+                font-weight: 600;
+                color: #ffd166;
+            }
+
+            .ant-typography {
+                color: #fff;
+            }
+        }
+    }
+
+    .ant-typography {
+        color: #fff;
+    }
 }

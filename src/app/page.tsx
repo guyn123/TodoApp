@@ -62,7 +62,7 @@ export default function TodoApp() {
     setModalType("save");
     setModalOpen(true);
   };
-
+  // xóa 1 học nhiều
   const openDeleteModal = (idOrIds: string | string[]) => {
     if (Array.isArray(idOrIds)) setDeleteIds(idOrIds);
     else setDeleteIds([idOrIds]);
@@ -254,6 +254,7 @@ export default function TodoApp() {
           className="todo-table"
           columns={columns}
           dataSource={filteredTodos}
+
           pagination={{
             pageSize,
             showSizeChanger: true,

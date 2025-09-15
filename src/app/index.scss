@@ -4,9 +4,9 @@
   align-items: flex-start;
   padding: 80px 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #95a3e9, #f690a4); // gradient bắt mắt
+  background: linear-gradient(135deg, #95a3e9, #f690a4);
 
-
+  // pagination nhỏ gọn
   .ant-pagination {
     font-size: 12px;
     gap: 4px;
@@ -18,30 +18,24 @@
 
   .ant-pagination .ant-pagination-item {
     min-width: 0px;
-    /* nút số nhỏ hơn */
     height: 26px;
     line-height: 24px;
   }
 
   .todo-card {
-    width: 750px;
+    width: 900px;
     border-radius: 20px;
     padding: 24px;
     background: #ffffff;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.2s ease;
 
-    // &:hover {
-    //   transform: translateY(-3px);
-    // }
-
     .todo-title {
       text-align: center;
-      font-size: 20px;
+      font-size: 25px;
       font-weight: bold;
       color: #a83fff;
       margin-bottom: 8px;
-
       cursor: pointer;
       transition: transform 0.5s ease;
 
@@ -60,17 +54,33 @@
       }
     }
 
+    .todo-card {
+      .todo-table {
+        max-width: 100%; // bảng không vượt quá card
+        overflow-x: auto; // thêm thanh scroll ngang nếu cần
 
+        .ant-table {
+          table-layout: fixed; // cột sẽ tôn trọng max-width
+          width: 100%;
+        }
 
-    //chữ dài xuống dòng,ko bị tràn
-    .todo-table {
-      .ant-table-tbody>tr>td.todo-text {
-        white-space: normal;
-        word-break: break-word;
-        max-width: 200px;
+        .ant-table-thead>tr>th,
+        .ant-table-tbody>tr>td {
+          white-space: nowrap; // giữ 1 dòng (chỉ xuống khi quá dài)
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
 
+        // riêng cột công việc cho phép xuống dòng khi dài
+        .ant-table-tbody>tr>td.todo-text {
+          white-space: normal;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          max-width: 200px; // giới hạn, dài hơn thì xuống hàng
+        }
       }
     }
+
 
     .ant-divider {
       margin: 16px 0 24px;

@@ -14,7 +14,7 @@ export default function SearchTodo({ onSearch }: SearchTodoProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
         setValue(text);
-        onSearch(text.trim()); // gọi realtime khi gõ
+        onSearch(text.trim());
     };
 
     return (
