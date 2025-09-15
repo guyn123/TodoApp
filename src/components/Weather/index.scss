@@ -1,0 +1,36 @@
+.weather-card {
+    margin-top: 24px;
+
+    border-radius: 12px;
+}
+
+.weather-actions {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.weather-input {
+    width: 300px;
+}
+
+.weather-loading {
+    margin-top: 20px;
+}
+
+.weather-result {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.weather-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.weather-temp {
+    font-size: 24px;
+    display: block;
+    margin: 8px 0;
+}

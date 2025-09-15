@@ -6,8 +6,8 @@ export interface ITodo {
   id: string;
   text: string;
   completed: boolean;
-  createdAt: string;       // ngày tạo (ISO string)
-  deadline: string | null; // ngày hết hạn (ISO string)
+  createdAt: string;       // ngày tạo 
+  deadline: string | null; // ngày hết hạn 
   priority: "Low" | "Medium" | "High" | "Urgent";
 }
 
