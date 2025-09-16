@@ -1,0 +1,44 @@
+.app-header {
+    position: fixed;
+    /* cố định trên cùng */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0 24px;
+    height: 64px;
+
+    .logo {
+        display: flex;
+        align-items: center;
+
+        img {
+            height: 40px;
+            object-fit: contain;
+        }
+    }
+
+    .auth {
+        display: flex;
+        align-items: center;
+
+        button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.4);
+            }
+        }
+    }
+}

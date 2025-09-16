@@ -1,0 +1,95 @@
+/* page.scss */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    padding: 20px;
+    background-image: url('https://www.baltana.com/files/wallpapers-25/Nature-Minimalist-Wallpaper-1920x1080-64720.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 32px 24px;
+    // border-radius: 16px;
+    // box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+    .logo {
+        margin-bottom: 16px;
+
+        img {
+            width: 80px;
+            height: auto;
+        }
+    }
+
+    .ant-typography {
+        margin-bottom: 4px;
+    }
+
+    .ant-typography-secondary {
+        font-size: 14px;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .login-form {
+        text-align: left;
+
+        .ant-form-item-label>label {
+            font-weight: 500;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+
+            .ant-checkbox-wrapper {
+                font-size: 14px;
+            }
+
+            a {
+                font-size: 13px;
+                font-weight: 500;
+                color: #d4eaff;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: #40a9ff;
+                }
+            }
+        }
+
+        button {
+            font-weight: 600;
+            border-radius: 8px;
+            height: 40px;
+        }
+    }
+
+    .footer-text {
+        margin-top: 20px;
+        font-size: 14px;
+
+        a {
+            color: #f2f9ff;
+            font-weight: 500;
+            margin-left: 4px;
+
+            &:hover {
+                color: #40a9ff;
+            }
+        }
+    }
+}

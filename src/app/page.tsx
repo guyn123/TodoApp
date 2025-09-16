@@ -11,6 +11,7 @@ import TodoActions from "@/components/TodoActions";
 import ConfirmModal from "@/components/ComfirmModal";
 import SearchTodo from "@/components/SearchTodo";
 import Weather from "@/components/Weather";
+import Header from "@/components/Header";
 
 const { Title } = Typography;
 
@@ -229,13 +230,13 @@ export default function TodoApp() {
   ];
 
   return (
-    <div className="todo-container">
+    <div className="todo-container" >
+      <Header />
       {contextHolder}
+
       <Card className="todo-card">
         <Title level={2} className="todo-title"> 📝 Todo App </Title>
         <Weather />
-
-
         <Divider />
         <AddTodoForm messageApi={messageApi} />
         <SearchTodo onSearch={setSearchTerm} />

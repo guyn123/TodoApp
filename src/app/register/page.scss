@@ -1,0 +1,52 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    padding: 16px;
+    background-image: url('https://www.baltana.com/files/wallpapers-25/Nature-Minimalist-Wallpaper-1920x1080-64720.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.register-card {
+    width: 400px;
+    padding: 24px;
+    border-radius: 16px;
+    // background: rgba(255, 255, 255, 0.9);
+    // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+    .logo {
+        margin-bottom: 16px;
+
+        img {
+            height: 50px;
+            object-fit: contain;
+        }
+    }
+
+    .register-form {
+        text-align: left;
+    }
+
+    .footer-text {
+        margin-top: 20px;
+        font-size: 14px;
+
+        a {
+            color: #d6dbe9;
+            font-weight: 500;
+            margin-left: 4px;
+
+            &:hover {
+                color: #40a9ff;
+            }
+        }
+    }
+}
