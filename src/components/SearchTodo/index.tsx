@@ -3,7 +3,7 @@
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import "./index.scss";
+// import "./index.scss";
 interface SearchTodoProps {
     onSearch: (term: string) => void;
 }

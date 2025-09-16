@@ -99,7 +99,9 @@ export default function Weather() {
         }
     };
 
-
+    useEffect(() => {
+        handleGetCurrentLocation();
+    }, []);
 
     return (
         <Card title="🌦️ Thời tiết" className="weather-card">
@@ -128,14 +130,15 @@ export default function Weather() {
                         <div className="weather-left">
                             <Title level={4}>{weather.location}</Title>
                             <img src={weather.icon} alt="weather" className="weather-icon" />
+                            <div>
+                                <Text>{weather.description}</Text>
+                            </div>
                         </div>
                         <div className="weather-right">
                             <Text strong className="weather-temp">
                                 {weather.temp}°C
                             </Text>
-                            <div>
-                                <Text>{weather.description}</Text>
-                            </div>
+
                             <div>
                                 <Text>💧 Độ ẩm: {weather.humidity}%</Text>
                             </div>
