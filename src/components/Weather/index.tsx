@@ -1,74 +1,61 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-    Card,
-    Input,
-    Button,
-    Space,
-    Typography,
-    Spin,
-    message,
-} from "antd";
-import { EnvironmentOutlined, SearchOutlined } from "@ant-design/icons";
+import { Card, Cascader, Button, Typography, Spin, message } from "antd";
+import { EnvironmentOutlined } from "@ant-design/icons";
 import "./index.scss";
+
+import { fetchWeather, IWeather } from "@/api/weatherApi";
+import {
+    fetchAdministrativeData,
+    geocodeAddress,
+    reverseGeocode,
+} from "@/api/locationApi";
 
 const { Title, Text } = Typography;
 
-const OPENWEATHER_KEY = "a387c92784a152466bdb4c5eab9cb7e6";
-const GOONG_KEY = "GoUF6A5PwA0LIhYqcWAvySAJqCRunrGrptDW1iQB";
-
-interface IWeather {
-    temp: number;
-    description: string;
-    icon: string;
-    location: string;
-    humidity: number;
-    wind: number;
-}
-
 export default function Weather() {
     const [loading, setLoading] = useState(false);
-    const [city, setCity] = useState("");
+    const [loadingLocation, setLoadingLocation] = useState(false);
     const [weather, setWeather] = useState<IWeather | null>(null);
+    const [options, setOptions] = useState<any[]>([]);
 
-    // Lấy dữ liệu thời tiết theo lat(vĩ độ)/lon(kinh độ)
-    const fetchWeather = async (
-        lat: number,
-        lon: number,
-        locationName?: string
-    ) => {
+    const handleLocationChange = async (value: string[]) => {
+        const address = [...value].reverse().join(", ");
         setLoading(true);
         try {
-            const res = await fetch(
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_KEY}&units=metric&lang=vi`
-            );
-            const data = await res.json();
-            if (data.cod !== 200) throw new Error(data.message);
-
-            setWeather({
-                temp: data.main.temp,
-                description: data.weather[0].description,
-                icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
-                location: locationName || data.name,
-                humidity: data.main.humidity,
-                wind: data.wind.speed,
-            });
-        } catch (err) {
-            message.error("Không lấy được dữ liệu thời tiết");
+            const data = await geocodeAddress(address);
+            if (!data.results?.length) {
+                message.error("Không tìm thấy tọa độ địa điểm");
+                return;
+            }
+            const { lat, lng } = data.results[0].geometry.location;
+            const weatherData = await fetchWeather(lat, lng, address);
+            setWeather(weatherData);
+        } catch {
+            message.error("Lỗi khi tìm địa điểm");
         } finally {
             setLoading(false);
         }
     };
 
+    // Lấy vị trí hiện tại
     const handleGetCurrentLocation = () => {
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                fetchWeather(
-                    pos.coords.latitude,
-                    pos.coords.longitude,
-                    "Vị trí của bạn"
-                );
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                try {
+                    const data = await reverseGeocode(lat, lng);
+                    const fullAddress =
+                        data.results?.[0]?.formatted_address || "Vị trí hiện tại";
+                    const weatherData = await fetchWeather(lat, lng, fullAddress);
+                    setWeather(weatherData);
+                } catch {
+                    message.error("Không thể lấy tên địa điểm hiện tại");
+                    const weatherData = await fetchWeather(lat, lng);
+                    setWeather(weatherData);
+                }
             },
             () => {
                 message.error("Không thể lấy vị trí hiện tại");
@@ -76,49 +63,37 @@ export default function Weather() {
         );
     };
 
-    const handleSearchCity = async () => {
-        if (!city.trim()) return;
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `https://rsapi.goong.io/geocode?address=${encodeURIComponent(
-                    city
-                )}&api_key=${GOONG_KEY}`
-            );
-            const data = await res.json();
-            if (!data.results?.length) {
-                message.error("Không tìm thấy địa điểm");
-                return;
-            }
-            const { lat, lng } = data.results[0].geometry.location;
-            await fetchWeather(lat, lng, data.results[0].formatted_address);
-        } catch (err) {
-            message.error("Lỗi khi tìm địa điểm");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        (async () => {
+            setLoadingLocation(true);
+            try {
+                const data = await fetchAdministrativeData();
+                setOptions(data);
+            } catch {
+                message.error("Không thể tải dữ liệu địa phương");
+            } finally {
+                setLoadingLocation(false);
+            }
+        })();
+
         handleGetCurrentLocation();
     }, []);
 
     return (
         <Card title="🌦️ Thời tiết" className="weather-card">
-            <Space className="weather-actions">
-                <Input
-                    placeholder="Nhập địa điểm"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="weather-input"
+            <div className="weather-actions" style={{ marginBottom: 16 }}>
+                <Cascader
+                    options={options}
+                    onChange={handleLocationChange}
+                    placeholder="Chọn tỉnh → quận → phường"
+                    showSearch
+                    loading={loadingLocation}
+                    style={{ width: 300, marginRight: 8 }}
                 />
-                <Button icon={<SearchOutlined />} onClick={handleSearchCity}>
-                    Tìm kiếm
-                </Button>
                 <Button icon={<EnvironmentOutlined />} onClick={handleGetCurrentLocation}>
                     Vị trí hiện tại
                 </Button>
-            </Space>
+            </div>
 
             {loading ? (
                 <div className="weather-loading">
@@ -138,7 +113,6 @@ export default function Weather() {
                             <Text strong className="weather-temp">
                                 {weather.temp}°C
                             </Text>
-
                             <div>
                                 <Text>💧 Độ ẩm: {weather.humidity}%</Text>
                             </div>
@@ -148,7 +122,6 @@ export default function Weather() {
                         </div>
                     </div>
                 </div>
-
             ) : (
                 <Text>Không có dữ liệu</Text>
             )}

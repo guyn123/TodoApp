@@ -5,11 +5,25 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-    background-image: url('https://imgcdn.stablediffusionweb.com/2024/3/19/49925953-5f53-4394-9e6a-52b3759cebc4.jpg'); // đường dẫn hình nền của bạn
+    background-image: url('https://imgcdn.stablediffusionweb.com/2024/3/19/49925953-5f53-4394-9e6a-52b3759cebc4.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     color: #fff;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 0;
+    }
+
+    * {
+        position: relative;
+        z-index: 1;
+    }
 
     &:hover {
         transform: translateY(-2px);
@@ -20,7 +34,6 @@
         text-align: center;
         font-size: 18px;
         font-weight: 600;
-
         color: #fff;
         border-bottom: none;
     }
@@ -30,7 +43,7 @@
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 12px;
 
         .weather-input {
             width: 260px;
@@ -51,38 +64,42 @@
     .weather-result {
         margin-top: 12px;
         padding: 16px;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.4);
         border-radius: 12px;
 
         .weather-row {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 100px;
+            gap: 40px;
+            max-width: 500px;
+            margin: 0 auto;
 
             @media (max-width: 600px) {
                 flex-direction: column;
                 text-align: center;
-                gap: 20px;
+                gap: 16px;
             }
         }
 
         .weather-left {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
 
             .weather-icon {
-                width: 90px;
-                height: 90px;
-                margin-top: 6px;
+                width: 80px;
+                height: 80px;
+                margin: 8px 0;
             }
 
             h4 {
                 margin: 0;
                 color: #ffd166;
-                font-size: 25px;
+                font-size: 22px;
                 font-weight: 600;
+                text-align: center;
             }
         }
 
@@ -90,19 +107,21 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            align-items: center;
+
 
             .weather-temp {
-                font-size: 28px;
-                font-weight: 600;
+                font-size: 45px;
+                font-weight: 700;
                 color: #ffd166;
                 text-align: center;
             }
 
             .ant-typography {
                 color: #fff;
-
             }
         }
+
     }
 
     .ant-typography {
