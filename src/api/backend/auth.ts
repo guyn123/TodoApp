@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8079/api/auth'; // URL của backend
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = `${BASE_URL}/auth`;
 
 export interface LoginRequest {
     email: string;

@@ -20,7 +20,7 @@ export default function Login() {
             const response = await login({ email: values.email, password: values.password });
             setToken(response.token);
             messageApi.success('Đăng nhập thành công!');
-            router.push('/'); // Chuyển hướng về trang chính
+            router.push('/');
         } catch (error: any) {
             messageApi.error(error.message || 'Email hoặc mật khẩu không đúng!');
         }

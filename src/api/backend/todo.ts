@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8079/api/todos';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = `${BASE_URL}/todos`;
 
 export interface TodoRequest {
   text: string;
@@ -25,7 +26,7 @@ export const getTodos = async (token: string): Promise<TodoResponse[]> => {
     });
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data || 'Không thể tải danh sách công việc');
+    throw new Error(error.response?.data || 'Không thể tải danh sách công việc vui lòng đăng nhập lại');
   }
 };
 
@@ -36,7 +37,7 @@ export const createTodo = async (data: TodoRequest, token: string): Promise<Todo
     });
     return response.data;
   } catch (error: any) {
-    throw new Error(error.response?.data || 'Không thể thêm công việc');
+    throw new Error(error.response?.data || 'Không thể thêm công việc ');
   }
 };
 

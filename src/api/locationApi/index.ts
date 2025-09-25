@@ -29,7 +29,8 @@ export const geocodeAddress = async (address: string) => {
 export const reverseGeocode = async (lat: number, lng: number) => {
   const key = process.env.NEXT_PUBLIC_GOONG_KEY;
   const res = await fetch(
-    `https://rsapi.goong.io/reverse?lat=${lat}&lng=${lng}&api_key=${key}`
+    `https://rsapi.goong.io/Geocode?latlng=${lat},${lng}&api_key=${key}`
   );
   return res.json();
 };
+

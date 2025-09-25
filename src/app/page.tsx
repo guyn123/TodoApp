@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, Typography, Divider, Table, Input, Checkbox, Button, Space, message } from 'antd';
 import { EditOutlined, SaveOutlined, DeleteOutlined } from '@ant-design/icons';
 import './index.scss';
@@ -14,13 +15,17 @@ import Weather from '@/components/Weather';
 import Header from '@/components/Header';
 import { useAuthStore } from '@/store/authStore';
 import { getTodos, updateTodo, deleteTodo } from '@/api/backend/todo';
-import { useRouter } from 'next/navigation';
+import { jwtDecode } from 'jwt-decode';
 
 const { Title } = Typography;
 
+interface DecodedToken {
+  exp: number;
+}
+
 export default function TodoApp() {
   const { todos, filter, setTodos, editTodo, removeTodo, completeMany } = useTodoStore();
-  const { token, isAuthenticated } = useAuthStore();
+  const { token, isAuthenticated, clearToken } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
@@ -33,27 +38,28 @@ export default function TodoApp() {
   const [pageSize, setPageSize] = useState(5);
   const router = useRouter();
 
-
   useEffect(() => {
-    if (isAuthenticated && token) {
-      getTodos(token)
-        .then((data) => setTodos(data))
-        .catch((error) => messageApi.error(error.message));
-    } else {
+    if (!isAuthenticated || !token) {
       setTodos([]);
-
+      return;
     }
-  }, [isAuthenticated, token, setTodos, messageApi]);
+    const checkToken = () => {
+      const decoded: DecodedToken = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
 
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div className="todo-container">
-  //       {contextHolder}
-  //       <Header />
-  //       <Weather />
-  //     </div>
-  //   );
-  // }
+      if (decoded.exp < currentTime) {
+        clearToken();
+        router.push("/login");
+      }
+    };
+    checkToken();
+    getTodos(token)
+      .then((data) => setTodos(data))
+      .catch((error) => messageApi.error(error.message));
+    const interval = setInterval(checkToken, 10 * 1000);
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated, token, setTodos, clearToken, router]);
 
   const filteredTodos = todos
     .filter((todo) => {
