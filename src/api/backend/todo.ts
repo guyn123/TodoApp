@@ -61,3 +61,14 @@ export const deleteTodo = async (id: number, token: string): Promise<void> => {
     throw new Error(error.response?.data || 'Không thể xóa công việc');
   }
 };
+export const deleteManyTodos = async (ids: number[], token: string): Promise<void> => {
+  try {
+    await axios.delete(API_URL, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: ids, // gửi mảng ID trong body
+    });
+  } catch (error: any) {
+    throw new Error(error.response?.data || 'Không thể xóa nhiều công việc');
+  }
+};
+

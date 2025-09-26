@@ -14,7 +14,7 @@ import SearchTodo from '@/components/SearchTodo';
 import Weather from '@/components/Weather';
 import Header from '@/components/Header';
 import { useAuthStore } from '@/store/authStore';
-import { getTodos, updateTodo, deleteTodo } from '@/api/backend/todo';
+import { getTodos, updateTodo, deleteTodo, deleteManyTodos } from '@/api/backend/todo'; // ✅ thêm deleteManyTodos
 import { jwtDecode } from 'jwt-decode';
 
 const { Title } = Typography;
@@ -118,7 +118,14 @@ export default function TodoApp() {
   const handleDeleteConfirm = async () => {
     if (!deleteIds || !token) return;
     try {
-      await Promise.all(deleteIds.map((id) => deleteTodo(id, token)));
+      if (deleteIds.length === 1) {
+        // ✅ xoá 1 todo
+        await deleteTodo(deleteIds[0], token);
+      } else {
+        // ✅ xoá nhiều todo
+        await deleteManyTodos(deleteIds, token);
+      }
+
       deleteIds.forEach((id) => removeTodo(id));
       setSelectedIds((prev) => prev.filter((id) => !deleteIds.includes(id)));
       setDeleteIds(null);
@@ -190,7 +197,8 @@ export default function TodoApp() {
     {
       title: 'Ngày tạo',
       dataIndex: 'createdAt',
-      sorter: (a: ITodo, b: ITodo) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      sorter: (a: ITodo, b: ITodo) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       render: (date: string) => new Date(date).toLocaleString('vi-VN'),
     },
     {
@@ -199,13 +207,18 @@ export default function TodoApp() {
       render: (date: string | null, todo: ITodo) => {
         if (!date) return '.  .  .';
         const isExpired = new Date(date) < new Date() && !todo.completed;
-        return <span style={{ color: isExpired ? 'red' : '#000' }}>{new Date(date).toLocaleString('vi-VN')}</span>;
+        return (
+          <span style={{ color: isExpired ? 'red' : '#000' }}>
+            {new Date(date).toLocaleString('vi-VN')}
+          </span>
+        );
       },
     },
     {
       title: 'Ưu tiên',
       dataIndex: 'priority',
-      sorter: (a: ITodo, b: ITodo) => priorityOrder[a.priority] - priorityOrder[b.priority],
+      sorter: (a: ITodo, b: ITodo) =>
+        priorityOrder[a.priority] - priorityOrder[b.priority],
       render: (priority: ITodo['priority']) => {
         const colorMap: Record<ITodo['priority'], string> = {
           Low: '#52c41a',
@@ -215,7 +228,13 @@ export default function TodoApp() {
         };
         return (
           <span style={{ color: colorMap[priority], fontWeight: 'bold' }}>
-            {priority === 'Low' ? 'Thấp' : priority === 'Medium' ? 'Trung bình' : priority === 'High' ? 'Cao' : 'Khẩn cấp'}
+            {priority === 'Low'
+              ? 'Thấp'
+              : priority === 'Medium'
+                ? 'Trung bình'
+                : priority === 'High'
+                  ? 'Cao'
+                  : 'Khẩn cấp'}
           </span>
         );
       },
@@ -227,7 +246,11 @@ export default function TodoApp() {
       render: (_: string, todo: ITodo) => (
         <Space>
           {editingId === todo.id ? (
-            <Button type="link" icon={<SaveOutlined />} onClick={() => openSaveModal(todo.id)} />
+            <Button
+              type="link"
+              icon={<SaveOutlined />}
+              onClick={() => openSaveModal(todo.id)}
+            />
           ) : (
             <Button
               type="link"
@@ -236,7 +259,12 @@ export default function TodoApp() {
               disabled={todo.completed}
             />
           )}
-          <Button type="link" danger icon={<DeleteOutlined />} onClick={() => openDeleteModal(todo.id)} />
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => openDeleteModal(todo.id)}
+          />
         </Space>
       ),
     },
