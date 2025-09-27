@@ -3,10 +3,12 @@
 import { Card, Form, Input, Button, Checkbox, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './page.scss';
-import { login } from '@/api/backend/auth';
+import { login, LoginRequest } from '@/api/AuthApi';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useMutation } from '@tanstack/react-query';
+import { MUTATION_KEYS } from '@/constants/queryKeys';
 
 const { Title, Text } = Typography;
 
@@ -15,15 +17,21 @@ export default function Login() {
     const { setToken } = useAuthStore();
     const router = useRouter();
 
-    const onFinish = async (values: any) => {
-        try {
-            const response = await login({ email: values.email, password: values.password });
+    const loginMutation = useMutation({
+        mutationKey: [MUTATION_KEYS.LOGIN],
+        mutationFn: (data: LoginRequest) => login(data),
+        onSuccess: (response) => {
             setToken(response.token);
             messageApi.success('Đăng nhập thành công!');
             router.push('/');
-        } catch (error: any) {
+        },
+        onError: (error: any) => {
             messageApi.error(error.message || 'Email hoặc mật khẩu không đúng!');
-        }
+        },
+    });
+
+    const onFinish = (values: any) => {
+        loginMutation.mutate({ email: values.email, password: values.password });
     };
 
     return (
@@ -67,7 +75,7 @@ export default function Login() {
                     </div>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
+                        <Button type="primary" htmlType="submit" block loading={loginMutation.isPending}>
                             ĐĂNG NHẬP
                         </Button>
                     </Form.Item>

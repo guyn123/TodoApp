@@ -14,8 +14,10 @@ import SearchTodo from '@/components/SearchTodo';
 import Weather from '@/components/Weather';
 import Header from '@/components/Header';
 import { useAuthStore } from '@/store/authStore';
-import { getTodos, updateTodo, deleteTodo, deleteManyTodos } from '@/api/backend/todo'; // ✅ thêm deleteManyTodos
+import { getTodos, updateTodo, deleteTodo, deleteManyTodos, PagedResponse, TodoResponse, TodoRequest } from '@/api/TodoApi';
 import { jwtDecode } from 'jwt-decode';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS, MUTATION_KEYS } from '@/constants/queryKeys';
 
 const { Title } = Typography;
 
@@ -27,57 +29,132 @@ export default function TodoApp() {
   const { todos, filter, setTodos, editTodo, removeTodo, completeMany } = useTodoStore();
   const { token, isAuthenticated, clearToken } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [inputValue, setInputValue] = useState<string>('');
+
+  // State cho modal, edit, select
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'save' | 'delete' | null>(null);
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [deleteIds, setDeleteIds] = useState<number[] | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [pageSize, setPageSize] = useState(5);
-  const router = useRouter();
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [inputValue, setInputValue] = useState<string>('');
 
+  // State phân trang, tìm kiếm
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalElements, setTotalElements] = useState(0);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { data: todosData, isLoading: todosLoading } = useQuery<PagedResponse<TodoResponse>>({
+    queryKey: [QUERY_KEYS.TODOS, { page, pageSize, searchTerm, filter }],
+    queryFn: () => getTodos(page, pageSize, searchTerm, filter, undefined),
+    enabled: !!token && isAuthenticated,
+  });
+
+  useEffect(() => {
+    if (todosData) {
+      let result = todosData.content;
+      if (filter === 'expired') {
+        result = result.filter(
+          (todo) =>
+            todo.deadline &&
+            new Date(todo.deadline) < new Date() &&
+            !todo.completed
+        );
+        setTodos(result);
+        setTotalElements(result.length);
+      } else {
+        setTodos(result);
+        setTotalElements(todosData.totalElements);
+      }
+    }
+  }, [todosData, filter, setTodos]);
+
+  // Kiểm tra token hết hạn
   useEffect(() => {
     if (!isAuthenticated || !token) {
       setTodos([]);
       return;
     }
+
     const checkToken = () => {
       const decoded: DecodedToken = jwtDecode(token);
       const currentTime = Math.floor(Date.now() / 1000);
-
       if (decoded.exp < currentTime) {
         clearToken();
-        router.push("/login");
+        router.push('/login');
       }
     };
+
     checkToken();
-    getTodos(token)
-      .then((data) => setTodos(data))
-      .catch((error) => messageApi.error(error.message));
+
     const interval = setInterval(checkToken, 10 * 1000);
-
     return () => clearInterval(interval);
-  }, [isAuthenticated, token, setTodos, clearToken, router]);
+  }, [isAuthenticated, token, clearToken, router, setTodos]);
 
-  const filteredTodos = todos
-    .filter((todo) => {
-      const now = new Date();
-      const isExpired = todo.deadline && new Date(todo.deadline) < now && !todo.completed;
-      if (filter === 'active') return !todo.completed && !isExpired;
-      if (filter === 'completed') return todo.completed;
-      if (filter === 'expired') return isExpired;
-      return true;
-    })
-    .filter((todo) => todo.text.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Mutations
+  const updateMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.UPDATE_TODO],
+    mutationFn: ({ id, data }: { id: number; data: TodoRequest }) => updateTodo(id, data),
+    onSuccess: (updatedTodo) => {
+      editTodo(currentId!, updatedTodo.text, updatedTodo.deadline, updatedTodo.priority);
+      setEditingId(null);
+      setModalOpen(false);
+      setCurrentId(null);
+      setModalType(null);
+      messageApi.success('Sửa công việc thành công!');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+    onError: (error: any) => {
+      messageApi.error(error.message || 'Không thể cập nhật công việc');
+    },
+  });
 
+  const deleteMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.DELETE_TODO],
+    mutationFn: (id: number) => deleteTodo(id),
+    onSuccess: () => {
+      removeTodo(deleteIds![0]);
+      setSelectedIds((prev) => prev.filter((id) => id !== deleteIds![0]));
+      setDeleteIds(null);
+      setModalOpen(false);
+      setModalType(null);
+      messageApi.success('Xóa công việc thành công!');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+    onError: (error: any) => {
+      messageApi.error(error.message || 'Không thể xóa công việc');
+    },
+  });
+
+  const deleteManyMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.DELETE_MANY_TODOS],
+    mutationFn: (ids: number[]) => deleteManyTodos(ids),
+    onSuccess: () => {
+      deleteIds!.forEach((id) => removeTodo(id));
+      setSelectedIds((prev) => prev.filter((id) => !deleteIds!.includes(id)));
+      setDeleteIds(null);
+      setModalOpen(false);
+      setModalType(null);
+      messageApi.success('Xóa công việc thành công!');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+    onError: (error: any) => {
+      messageApi.error(error.message || 'Không thể xóa nhiều công việc');
+    },
+  });
+
+  // Chọn/ bỏ chọn todo
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
     );
   };
 
+  // Bắt đầu edit
   const handleEdit = (todo: ITodo) => {
     setEditingId(todo.id);
     setInputValue(todo.text);
@@ -100,43 +177,23 @@ export default function TodoApp() {
     setModalOpen(true);
   };
 
-  const handleSaveConfirm = async () => {
-    if (!currentId || !token) return;
-    try {
-      const updatedTodo = await updateTodo(currentId, { text: inputValue }, token);
-      editTodo(currentId, updatedTodo.text, updatedTodo.deadline, updatedTodo.priority);
-      setEditingId(null);
-      setModalOpen(false);
-      setCurrentId(null);
-      setModalType(null);
-      messageApi.success('Sửa công việc thành công!');
-    } catch (error: any) {
-      messageApi.error(error.message);
+  // Xác nhận lưu edit
+  const handleSaveConfirm = () => {
+    if (!currentId) return;
+    updateMutation.mutate({ id: currentId, data: { text: inputValue } });
+  };
+
+  // Xác nhận xóa
+  const handleDeleteConfirm = () => {
+    if (!deleteIds) return;
+    if (deleteIds.length === 1) {
+      deleteMutation.mutate(deleteIds[0]);
+    } else {
+      deleteManyMutation.mutate(deleteIds);
     }
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteIds || !token) return;
-    try {
-      if (deleteIds.length === 1) {
-        // ✅ xoá 1 todo
-        await deleteTodo(deleteIds[0], token);
-      } else {
-        // ✅ xoá nhiều todo
-        await deleteManyTodos(deleteIds, token);
-      }
-
-      deleteIds.forEach((id) => removeTodo(id));
-      setSelectedIds((prev) => prev.filter((id) => !deleteIds.includes(id)));
-      setDeleteIds(null);
-      setModalOpen(false);
-      setModalType(null);
-      messageApi.success('Xóa công việc thành công!');
-    } catch (error: any) {
-      messageApi.error(error.message);
-    }
-  };
-
+  // Map màu priority
   const priorityOrder: Record<string, number> = {
     Low: 1,
     Medium: 2,
@@ -148,11 +205,11 @@ export default function TodoApp() {
     {
       title: (
         <Checkbox
-          checked={selectedIds.length === filteredTodos.length && filteredTodos.length > 0}
-          indeterminate={selectedIds.length > 0 && selectedIds.length < filteredTodos.length}
+          checked={selectedIds.length === todos.length && todos.length > 0}
+          indeterminate={selectedIds.length > 0 && selectedIds.length < todos.length}
           onChange={(e) => {
             if (e.target.checked) {
-              setSelectedIds(filteredTodos.map((todo) => todo.id));
+              setSelectedIds(todos.map((todo) => todo.id));
             } else {
               setSelectedIds([]);
             }
@@ -250,6 +307,7 @@ export default function TodoApp() {
               type="link"
               icon={<SaveOutlined />}
               onClick={() => openSaveModal(todo.id)}
+              loading={updateMutation.isPending}
             />
           ) : (
             <Button
@@ -264,6 +322,7 @@ export default function TodoApp() {
             danger
             icon={<DeleteOutlined />}
             onClick={() => openDeleteModal(todo.id)}
+            loading={deleteMutation.isPending || deleteManyMutation.isPending}
           />
         </Space>
       ),
@@ -295,21 +354,25 @@ export default function TodoApp() {
           rowKey="id"
           className="todo-table"
           columns={columns}
-          dataSource={filteredTodos}
+          dataSource={todos}
+          loading={todosLoading}
           pagination={{
+            current: page + 1,
             pageSize,
+            total: totalElements,
             showSizeChanger: true,
             pageSizeOptions: ['5', '10', '20'],
             showQuickJumper: true,
             position: ['bottomCenter'],
-            onShowSizeChange: (current, size) => {
+            onChange: (p, size) => {
+              setPage(p - 1);
               setPageSize(size);
             },
           }}
         />
         <ConfirmModal
           open={modalOpen}
-          confirmLoading={false}
+          confirmLoading={updateMutation.isPending || deleteMutation.isPending || deleteManyMutation.isPending}
           modalText={
             modalType === 'save'
               ? 'Bạn có muốn lưu công việc này không?'

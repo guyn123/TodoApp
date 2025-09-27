@@ -3,9 +3,11 @@
 import { Card, Form, Input, Button, Typography, message } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import './page.scss';
-import { register } from '@/api/backend/auth';
+import { register, RegisterRequest } from '@/api/AuthApi';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useMutation } from '@tanstack/react-query';
+import { MUTATION_KEYS } from '@/constants/queryKeys';
 
 const { Title } = Typography;
 
@@ -14,14 +16,20 @@ export default function Register() {
     const [messageApi, contextHolder] = message.useMessage();
     const router = useRouter();
 
-    const onFinish = async (values: any) => {
-        try {
-            await register({ email: values.email, password: values.password });
+    const registerMutation = useMutation({
+        mutationKey: [MUTATION_KEYS.REGISTER],
+        mutationFn: (data: RegisterRequest) => register(data),
+        onSuccess: () => {
             messageApi.success('Đăng ký thành công! Vui lòng đăng nhập.');
             router.push('/login');
-        } catch (error: any) {
+        },
+        onError: (error: any) => {
             messageApi.error(error.message || 'Email đã tồn tại hoặc lỗi khi đăng ký!');
-        }
+        },
+    });
+
+    const onFinish = (values: any) => {
+        registerMutation.mutate({ email: values.email, password: values.password });
     };
 
     return (
@@ -76,7 +84,7 @@ export default function Register() {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
+                        <Button type="primary" htmlType="submit" block loading={registerMutation.isPending}>
                             ĐĂNG KÝ
                         </Button>
                     </Form.Item>

@@ -7,7 +7,9 @@ import "./index.scss";
 
 import { fetchWeather, IWeather } from "@/api/weatherApi";
 import {
-    fetchAdministrativeData,
+    fetchProvinces,
+    fetchDistricts,
+    fetchWards,
     geocodeAddress,
     reverseGeocode,
 } from "@/api/locationApi";
@@ -21,17 +23,14 @@ export default function Weather() {
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [weather, setWeather] = useState<IWeather | null>(null);
 
-    // Data toàn bộ
     const [provinces, setProvinces] = useState<any[]>([]);
     const [districts, setDistricts] = useState<any[]>([]);
     const [wards, setWards] = useState<any[]>([]);
 
-    // State chọn
     const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
     const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
     const [selectedWard, setSelectedWard] = useState<string | null>(null);
 
-    // Hàm gọi API thời tiết từ địa chỉ
     const fetchWeatherByAddress = async (address: string) => {
         if (!address) return;
         setLoading(true);
@@ -39,6 +38,7 @@ export default function Weather() {
             const data = await geocodeAddress(address);
             if (!data.results?.length) {
                 message.error("Không tìm thấy tọa độ địa điểm");
+                setLoading(false);
                 return;
             }
             const { lat, lng } = data.results[0].geometry.location;
@@ -51,58 +51,22 @@ export default function Weather() {
         }
     };
 
-    // Tìm kiếm địa điểm
-    const handleSearchLocation = async (value: string) => {
-        if (!value.trim()) return;
-        fetchWeatherByAddress(value);
-    };
 
-    // Chọn Tỉnh/Thành phố
-    const handleProvinceChange = (provinceName: string) => {
-        setSelectedProvince(provinceName);
-        setSelectedDistrict(null);
-        setSelectedWard(null);
-        setWards([]);
-        const province = provinces.find((p) => p.label === provinceName);
-        if (province) {
-            setDistricts(province.children || []);
-        }
-        fetchWeatherByAddress(provinceName);
-    };
-
-    // Chọn Quận/Huyện
-    const handleDistrictChange = (districtName: string) => {
-        setSelectedDistrict(districtName);
-        setSelectedWard(null);
-        const district = districts.find((d) => d.label === districtName);
-        if (district) {
-            setWards(district.children || []);
-        }
-        const address = [districtName, selectedProvince].filter(Boolean).join(", ");
-        fetchWeatherByAddress(address);
-    };
-
-    // Chọn Phường/Xã
-    const handleWardChange = (wardName: string) => {
-        setSelectedWard(wardName);
-        const address = [wardName, selectedDistrict, selectedProvince]
-            .filter(Boolean)
-            .join(", ");
-        fetchWeatherByAddress(address);
-    };
-
-    // Lấy vị trí hiện tại
-    const handleGetCurrentLocation = () => {
+    const handleGetCurrentLocation = async () => {
         navigator.geolocation.getCurrentPosition(
             async (pos) => {
                 const lat = pos.coords.latitude;
                 const lng = pos.coords.longitude;
                 try {
                     const data = await reverseGeocode(lat, lng);
-                    const fullAddress =
-                        data.results?.[0]?.formatted_address || "Vị trí hiện tại";
+                    const fullAddress = data.results?.[0]?.formatted_address || "Vị trí hiện tại";
                     const weatherData = await fetchWeather(lat, lng, fullAddress);
                     setWeather(weatherData);
+                    setSelectedProvince(null);
+                    setSelectedDistrict(null);
+                    setSelectedWard(null);
+                    setDistricts([]);
+                    setWards([]);
                 } catch {
                     message.error("Không thể lấy tên địa điểm hiện tại");
                     const weatherData = await fetchWeather(lat, lng);
@@ -115,15 +79,89 @@ export default function Weather() {
         );
     };
 
-    // Fetch danh sách tỉnh thành + load vị trí ban đầu
+    // tinh
+    const handleProvinceChange = async (provinceCode: string | null) => {
+        setSelectedProvince(provinceCode);
+        setSelectedDistrict(null);
+        setSelectedWard(null);
+        setDistricts([]);
+        setWards([]);
+
+        if (!provinceCode) {
+            handleGetCurrentLocation();
+            return;
+        }
+
+        try {
+            const districtsData = await fetchDistricts(provinceCode);
+            setDistricts(districtsData);
+
+            const provinceName = provinces.find((p) => p.value === provinceCode)?.label || "";
+            fetchWeatherByAddress(provinceName);
+        } catch {
+            message.error("Không thể tải danh sách quận/huyện");
+        }
+    };
+
+    // Cquanuận
+    const handleDistrictChange = async (districtCode: string | null) => {
+        setSelectedDistrict(districtCode);
+        setSelectedWard(null);
+        setWards([]);
+
+        if (!districtCode) {
+            const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+            fetchWeatherByAddress(provinceName);
+            return;
+        }
+
+        try {
+            const wardsData = await fetchWards(districtCode);
+            setWards(wardsData);
+
+            const districtName = districts.find((d) => d.value === districtCode)?.label || "";
+            const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+            fetchWeatherByAddress(`${districtName}, ${provinceName}`);
+        } catch {
+            message.error("Không thể tải danh sách phường/xã");
+        }
+    };
+
+    // phường
+    const handleWardChange = (wardCode: string | null) => {
+        setSelectedWard(wardCode);
+
+        const districtName = districts.find((d) => d.value === selectedDistrict)?.label || "";
+        const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+
+        if (!wardCode) {
+            fetchWeatherByAddress([districtName, provinceName].filter(Boolean).join(", "));
+            return;
+        }
+
+        const wardName = wards.find((w) => w.value === wardCode)?.label || "";
+        fetchWeatherByAddress([wardName, districtName, provinceName].filter(Boolean).join(", "));
+    };
+
+
+    const handleSearchLocation = async (value: string) => {
+        const address = value.trim();
+        if (!address) return;
+        try {
+            await fetchWeatherByAddress(address);
+        } catch (err) {
+            console.error("Lỗi khi tìm kiếm địa điểm:", err);
+        }
+    };
+
     useEffect(() => {
         (async () => {
             setLoadingLocation(true);
             try {
-                const data = await fetchAdministrativeData();
-                setProvinces(data);
+                const provincesData = await fetchProvinces();
+                setProvinces(provincesData);
             } catch {
-                message.error("Không thể tải dữ liệu địa phương");
+                message.error("Không thể tải danh sách tỉnh");
             } finally {
                 setLoadingLocation(false);
             }
@@ -139,6 +177,7 @@ export default function Weather() {
                     placeholder="Chọn Tỉnh/Thành phố"
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleProvinceChange}
+                    allowClear
                     loading={loadingLocation}
                     value={selectedProvince || undefined}
                 >
@@ -153,6 +192,7 @@ export default function Weather() {
                     placeholder="Chọn Quận/Huyện"
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleDistrictChange}
+                    allowClear
                     disabled={!selectedProvince}
                     value={selectedDistrict || undefined}
                 >
@@ -167,6 +207,7 @@ export default function Weather() {
                     placeholder="Chọn Phường/Xã"
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleWardChange}
+                    allowClear
                     disabled={!selectedDistrict}
                     value={selectedWard || undefined}
                 >

@@ -26,8 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* <QueryProvider>{children}</QueryProvider> */}
-        {children}
+        <QueryProvider>{children}</QueryProvider>
+        {/* {children} */}
       </body>
     </html>
   );

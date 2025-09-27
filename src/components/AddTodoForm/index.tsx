@@ -6,7 +6,9 @@ import { useTodoStore } from '@/store/todoStore';
 import { useAuthStore } from '@/store/authStore';
 import dayjs from 'dayjs';
 import './index.scss';
-import { createTodo } from '@/api/backend/todo';
+import { createTodo, TodoRequest } from '@/api/TodoApi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { MUTATION_KEYS, QUERY_KEYS } from '@/constants/queryKeys';
 
 const { Option } = Select;
 
@@ -16,8 +18,25 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
   const [priority, setPriority] = useState<'Low' | 'Medium' | 'High' | 'Urgent'>('Low');
   const { addTodo } = useTodoStore();
   const { token } = useAuthStore();
+  const queryClient = useQueryClient();
 
-  const handleAdd = async () => {
+  const createMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.CREATE_TODO],
+    mutationFn: (data: TodoRequest) => createTodo(data),
+    onSuccess: (todo) => {
+      addTodo(todo);
+      setNewTodo('');
+      setDeadline(null);
+      setPriority('Low');
+      messageApi.success('Thêm công việc thành công!');
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+    onError: (error: any) => {
+      messageApi.error(error.message || 'Không thể thêm công việc');
+    },
+  });
+
+  const handleAdd = () => {
     if (!newTodo.trim()) {
       messageApi.error('Vui lòng nhập thông tin!');
       return;
@@ -26,16 +45,7 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
       messageApi.error('Vui lòng đăng nhập!');
       return;
     }
-    try {
-      const todo = await createTodo({ text: newTodo, deadline: deadline ? deadline.toISOString() : null, priority }, token);
-      addTodo(todo);
-      setNewTodo('');
-      setDeadline(null);
-      setPriority('Low');
-      messageApi.success('Thêm công việc thành công!');
-    } catch (error: any) {
-      messageApi.error(error.message);
-    }
+    createMutation.mutate({ text: newTodo, deadline: deadline ? deadline.toISOString() : null, priority });
   };
 
   return (
@@ -65,7 +75,7 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
         <Option value="High">Cao</Option>
         <Option value="Urgent">Khẩn cấp</Option>
       </Select>
-      <Button type="primary" onClick={handleAdd}>
+      <Button type="primary" onClick={handleAdd} loading={createMutation.isPending}>
         Thêm
       </Button>
     </Space.Compact>
