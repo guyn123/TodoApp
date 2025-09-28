@@ -1,0 +1,67 @@
+{
+    "header": {
+        "login": "Đăng nhập",
+        "logout": "Đăng xuất"
+    },
+    "todo": {
+        "addSuccess": "Thêm công việc thành công!",
+        "addError": "Không thể thêm công việc",
+        "required": "Vui lòng nhập thông tin!",
+        "loginRequired": "Vui lòng đăng nhập!",
+        "inputPlaceholder": "Nhập công việc...",
+        "deadline": "Hạn chót",
+        "priority": {
+            "low": "Thấp",
+            "medium": "Trung bình",
+            "high": "Cao",
+            "urgent": "Khẩn cấp"
+        },
+        "addButton": "Thêm",
+        "complete": "Hoàn thành",
+        "delete": "Xóa",
+        "completeSuccess": "Hoàn thành công việc thành công!",
+        "completeError": "Không thể hoàn thành công việc!",
+        "noTasksToComplete": "Không có công việc nào để hoàn thành!"
+    },
+    "auth": {
+        "loginRequired": "Vui lòng đăng nhập!"
+    },
+    "search": {
+        "placeholder": "Nhập từ khóa để tìm..."
+    },
+    "filter": {
+        "all": "Tất cả",
+        "active": "Chưa hoàn thành",
+        "completed": "Đã hoàn thành",
+        "expired": "Đã hết hạn"
+    },
+    "confirmModal": {
+        "title": "Xác nhận",
+        "ok": "Có",
+        "cancel": "Không"
+    },
+    "todoApp": {
+        "titlelogo": "📝 Quản lý công việc",
+        "title": "Công việc",
+        "createdAt": "Ngày tạo",
+        "deadline": "Hạn chót",
+        "priority": "Ưu tiên",
+        "choose": "Chọn",
+        "action": "Hành động",
+        "priorityLabels": {
+            "low": "Thấp",
+            "medium": "Trung bình",
+            "high": "Cao",
+            "urgent": "Khẩn cấp"
+        },
+        "expired": "Đã hết hạn",
+        "editSuccess": "Sửa công việc thành công!",
+        "editError": "Không thể cập nhật công việc",
+        "deleteSuccess": "Xóa công việc thành công!",
+        "deleteError": "Không thể xóa công việc",
+        "deleteManyError": "Không thể xóa nhiều công việc",
+        "saveConfirm": "Bạn có muốn lưu công việc này không?",
+        "deleteConfirm": "Bạn có chắc muốn xóa {{count}} công việc không?",
+        "required": "Vui lòng nhập thông tin!"
+    }
+}

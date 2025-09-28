@@ -1,17 +1,20 @@
 'use client';
 
-import { Layout, Button } from 'antd';
+import { Layout, Button, Space } from 'antd';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import './index.scss';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from '@/components/LanguageSwitch';
 
 const { Header: AntHeader } = Layout;
 
 export default function Header() {
     const { isAuthenticated, clearToken } = useAuthStore();
     const router = useRouter();
+    const { t } = useTranslation();
 
     const handleLogout = () => {
         clearToken();
@@ -23,16 +26,22 @@ export default function Header() {
             <div className="logo">
                 <img src="/images/logo1.png" alt="TodoApp Logo" />
             </div>
+
             <div className="auth">
-                {isAuthenticated ? (
-                    <Button icon={<LogoutOutlined />} onClick={handleLogout}>
-                        Đăng xuất
-                    </Button>
-                ) : (
-                    <Link href="/login">
-                        <Button icon={<UserOutlined />}>Đăng nhập</Button>
-                    </Link>
-                )}
+                <Space>
+                    {/* ✅ Language switch đặt trong Header */}
+                    <LanguageSwitch />
+
+                    {isAuthenticated ? (
+                        <Button icon={<LogoutOutlined />} onClick={handleLogout}>
+                            {t('header.logout')}
+                        </Button>
+                    ) : (
+                        <Link href="/login">
+                            <Button icon={<UserOutlined />}>{t('header.login')}</Button>
+                        </Link>
+                    )}
+                </Space>
             </div>
         </AntHeader>
     );

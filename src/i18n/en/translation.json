@@ -1,0 +1,67 @@
+{
+    "header": {
+        "login": "Login",
+        "logout": "Logout"
+    },
+    "todo": {
+        "addSuccess": "Task added successfully!",
+        "addError": "Could not add task",
+        "required": "Please enter a task!",
+        "loginRequired": "Please login!",
+        "inputPlaceholder": "Enter a task...",
+        "deadline": "Deadline",
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "urgent": "Urgent"
+        },
+        "addButton": "Add",
+        "complete": "Complete",
+        "delete": "Delete",
+        "completeSuccess": "Tasks completed successfully!",
+        "completeError": "Could not complete tasks!",
+        "noTasksToComplete": "No tasks to complete!"
+    },
+    "auth": {
+        "loginRequired": "Please log in!"
+    },
+    "search": {
+        "placeholder": "Enter keyword to search..."
+    },
+    "filter": {
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed",
+        "expired": "Expired"
+    },
+    "confirmModal": {
+        "title": "Confirm",
+        "ok": "Yes",
+        "cancel": "No"
+    },
+    "todoApp": {
+        "titlelogo": "📝Todo App",
+        "title": "Task",
+        "createdAt": "Created At",
+        "deadline": "Deadline",
+        "priority": "Priority",
+        "choose": "Click",
+        "action": "Actions",
+        "priorityLabels": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High",
+            "urgent": "Urgent"
+        },
+        "expired": "Expired",
+        "editSuccess": "Task updated successfully!",
+        "editError": "Failed to update task",
+        "deleteSuccess": "Task deleted successfully!",
+        "deleteError": "Failed to delete task",
+        "deleteManyError": "Failed to delete multiple tasks",
+        "saveConfirm": "Do you want to save this task?",
+        "deleteConfirm": "Are you sure you want to delete {{count}} task(s)?",
+        "required": "Please enter information!"
+    }
+}

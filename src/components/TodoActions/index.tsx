@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/authStore';
 import { updateTodo, TodoRequest } from '@/api/TodoApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MUTATION_KEYS, QUERY_KEYS } from '@/constants/queryKeys';
+import { useTranslation } from 'react-i18next';
 
 interface TodoActionsProps {
     todos: ITodo[];
@@ -26,6 +27,7 @@ const TodoActions: FC<TodoActionsProps> = ({
     const { token } = useAuthStore();
     const [messageApi, contextHolder] = message.useMessage();
     const queryClient = useQueryClient();
+    const { t } = useTranslation();
 
     const completeManyMutation = useMutation({
         mutationKey: [MUTATION_KEYS.COMPLETE_MANY_TODOS],
@@ -45,17 +47,17 @@ const TodoActions: FC<TodoActionsProps> = ({
         onSuccess: (_, incompleteIds) => {
             completeMany(incompleteIds);
             setSelectedIds([]);
-            messageApi.success('Hoàn thành công việc thành công!');
+            messageApi.success(t('todo.completeSuccess'));
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
         },
         onError: (error: any) => {
-            messageApi.error(error.message || 'Không thể hoàn thành công việc!');
+            messageApi.error(error.message || t('todo.completeError'));
         },
     });
 
     const handleCompleteMany = () => {
         if (!token) {
-            messageApi.error('Vui lòng đăng nhập!');
+            messageApi.error(t('auth.loginRequired'));
             return;
         }
         const incompleteIds = selectedIds.filter((id) => {
@@ -63,7 +65,7 @@ const TodoActions: FC<TodoActionsProps> = ({
             return todo && !todo.completed;
         });
         if (incompleteIds.length === 0) {
-            messageApi.info('Không có công việc nào để hoàn thành!');
+            messageApi.info(t('todo.noTasksToComplete'));
             return;
         }
         completeManyMutation.mutate(incompleteIds);
@@ -83,11 +85,16 @@ const TodoActions: FC<TodoActionsProps> = ({
         <>
             {contextHolder}
             <Space style={{ display: 'flex', justifyContent: 'flex-end', margin: '16px 0' }}>
-                <Button type="primary" disabled={!canComplete} onClick={handleCompleteMany} loading={completeManyMutation.isPending}>
-                    Hoàn thành
+                <Button
+                    type="primary"
+                    disabled={!canComplete}
+                    onClick={handleCompleteMany}
+                    loading={completeManyMutation.isPending}
+                >
+                    {t('todo.complete')}
                 </Button>
                 <Button danger disabled={selectedIds.length === 0} onClick={handleDeleteMany}>
-                    Xóa
+                    {t('todo.delete')}
                 </Button>
             </Space>
         </>

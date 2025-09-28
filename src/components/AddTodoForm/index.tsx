@@ -9,6 +9,7 @@ import './index.scss';
 import { createTodo, TodoRequest } from '@/api/TodoApi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MUTATION_KEYS, QUERY_KEYS } from '@/constants/queryKeys';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
@@ -19,6 +20,7 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
   const { addTodo } = useTodoStore();
   const { token } = useAuthStore();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const createMutation = useMutation({
     mutationKey: [MUTATION_KEYS.CREATE_TODO],
@@ -28,21 +30,21 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
       setNewTodo('');
       setDeadline(null);
       setPriority('Low');
-      messageApi.success('Thêm công việc thành công!');
+      messageApi.success(t('todo.addSuccess'));
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
     },
     onError: (error: any) => {
-      messageApi.error(error.message || 'Không thể thêm công việc');
+      messageApi.error(error.message || t('todo.addError'));
     },
   });
 
   const handleAdd = () => {
     if (!newTodo.trim()) {
-      messageApi.error('Vui lòng nhập thông tin!');
+      messageApi.error(t('todo.required'));
       return;
     }
     if (!token) {
-      messageApi.error('Vui lòng đăng nhập!');
+      messageApi.error(t('todo.loginRequired'));
       return;
     }
     createMutation.mutate({ text: newTodo, deadline: deadline ? deadline.toISOString() : null, priority });
@@ -51,14 +53,14 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
   return (
     <Space.Compact className="todo-input-group" style={{ width: '100%' }}>
       <Input
-        placeholder="Nhập công việc..."
+        placeholder={t('todo.inputPlaceholder')}
         value={newTodo}
         onChange={(e) => setNewTodo(e.target.value)}
         onPressEnter={handleAdd}
         style={{ width: '35%' }}
       />
       <DatePicker
-        placeholder="Deadline"
+        placeholder={t('todo.deadline')}
         value={deadline}
         onChange={(val) => setDeadline(val)}
         style={{ width: '35%' }}
@@ -70,13 +72,13 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
         onChange={(val) => setPriority(val)}
         style={{ width: '20%' }}
       >
-        <Option value="Low">Thấp</Option>
-        <Option value="Medium">Trung bình</Option>
-        <Option value="High">Cao</Option>
-        <Option value="Urgent">Khẩn cấp</Option>
+        <Option value="Low">{t('todo.priority.low')}</Option>
+        <Option value="Medium">{t('todo.priority.medium')}</Option>
+        <Option value="High">{t('todo.priority.high')}</Option>
+        <Option value="Urgent">{t('todo.priority.urgent')}</Option>
       </Select>
       <Button type="primary" onClick={handleAdd} loading={createMutation.isPending}>
-        Thêm
+        {t('todo.addButton')}
       </Button>
     </Space.Compact>
   );

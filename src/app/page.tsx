@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, Typography, Divider, Table, Input, Checkbox, Button, Space, message } from 'antd';
-import { EditOutlined, SaveOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Typography, Divider, Table, Input, Checkbox, Button, Space, message, } from 'antd';
+import { EditOutlined, SaveOutlined, DeleteOutlined, } from '@ant-design/icons';
 import './index.scss';
 import AddTodoForm from '@/components/AddTodoForm';
 import { useTodoStore, ITodo } from '@/store/todoStore';
@@ -14,10 +14,11 @@ import SearchTodo from '@/components/SearchTodo';
 import Weather from '@/components/Weather';
 import Header from '@/components/Header';
 import { useAuthStore } from '@/store/authStore';
-import { getTodos, updateTodo, deleteTodo, deleteManyTodos, PagedResponse, TodoResponse, TodoRequest } from '@/api/TodoApi';
+import { getTodos, updateTodo, deleteTodo, deleteManyTodos, PagedResponse, TodoResponse, TodoRequest, } from '@/api/TodoApi';
 import { jwtDecode } from 'jwt-decode';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS, MUTATION_KEYS } from '@/constants/queryKeys';
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
 
@@ -26,11 +27,12 @@ interface DecodedToken {
 }
 
 export default function TodoApp() {
-  const { todos, filter, setTodos, editTodo, removeTodo, completeMany } = useTodoStore();
+  const { todos, filter, setTodos, editTodo, removeTodo, completeMany } =
+    useTodoStore();
   const { token, isAuthenticated, clearToken } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const { t } = useTranslation();
 
-  // State cho modal, edit, select
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'save' | 'delete' | null>(null);
@@ -39,7 +41,6 @@ export default function TodoApp() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
 
-  // State phân trang, tìm kiếm
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
@@ -47,6 +48,7 @@ export default function TodoApp() {
 
   const router = useRouter();
   const queryClient = useQueryClient();
+
 
   const { data: todosData, isLoading: todosLoading } = useQuery<PagedResponse<TodoResponse>>({
     queryKey: [QUERY_KEYS.TODOS, { page, pageSize, searchTerm, filter }],
@@ -62,7 +64,7 @@ export default function TodoApp() {
           (todo) =>
             todo.deadline &&
             new Date(todo.deadline) < new Date() &&
-            !todo.completed
+            !todo.completed,
         );
         setTodos(result);
         setTotalElements(result.length);
@@ -73,7 +75,6 @@ export default function TodoApp() {
     }
   }, [todosData, filter, setTodos]);
 
-  // Kiểm tra token hết hạn
   useEffect(() => {
     if (!isAuthenticated || !token) {
       setTodos([]);
@@ -90,12 +91,11 @@ export default function TodoApp() {
     };
 
     checkToken();
-
     const interval = setInterval(checkToken, 10 * 1000);
     return () => clearInterval(interval);
   }, [isAuthenticated, token, clearToken, router, setTodos]);
 
-  // Mutations
+  // ==== MUTATIONS ==================
   const updateMutation = useMutation({
     mutationKey: [MUTATION_KEYS.UPDATE_TODO],
     mutationFn: ({ id, data }: { id: number; data: TodoRequest }) => updateTodo(id, data),
@@ -105,11 +105,11 @@ export default function TodoApp() {
       setModalOpen(false);
       setCurrentId(null);
       setModalType(null);
-      messageApi.success('Sửa công việc thành công!');
+      messageApi.success(t('todoApp.editSuccess'));
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
     },
-    onError: (error: any) => {
-      messageApi.error(error.message || 'Không thể cập nhật công việc');
+    onError: () => {
+      messageApi.error(t('todoApp.editError'));
     },
   });
 
@@ -122,11 +122,11 @@ export default function TodoApp() {
       setDeleteIds(null);
       setModalOpen(false);
       setModalType(null);
-      messageApi.success('Xóa công việc thành công!');
+      messageApi.success(t('todoApp.deleteSuccess'));
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
     },
-    onError: (error: any) => {
-      messageApi.error(error.message || 'Không thể xóa công việc');
+    onError: () => {
+      messageApi.error(t('todoApp.deleteError'));
     },
   });
 
@@ -139,22 +139,21 @@ export default function TodoApp() {
       setDeleteIds(null);
       setModalOpen(false);
       setModalType(null);
-      messageApi.success('Xóa công việc thành công!');
+      messageApi.success(t('todoApp.deleteSuccess'));
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
     },
-    onError: (error: any) => {
-      messageApi.error(error.message || 'Không thể xóa nhiều công việc');
+    onError: () => {
+      messageApi.error(t('todoApp.deleteManyError'));
     },
   });
 
-  // Chọn/ bỏ chọn todo
+  // === SELECT / EDIT =======
   const handleSelect = (id: number) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id],
     );
   };
 
-  // Bắt đầu edit
   const handleEdit = (todo: ITodo) => {
     setEditingId(todo.id);
     setInputValue(todo.text);
@@ -162,7 +161,7 @@ export default function TodoApp() {
 
   const openSaveModal = (id: number) => {
     if (!inputValue.trim()) {
-      messageApi.error('Vui lòng nhập thông tin!');
+      messageApi.error(t('todoApp.required'));
       return;
     }
     setCurrentId(id);
@@ -177,55 +176,50 @@ export default function TodoApp() {
     setModalOpen(true);
   };
 
-  // Xác nhận lưu edit
   const handleSaveConfirm = () => {
     if (!currentId) return;
     updateMutation.mutate({ id: currentId, data: { text: inputValue } });
   };
 
-  // Xác nhận xóa
   const handleDeleteConfirm = () => {
     if (!deleteIds) return;
-    if (deleteIds.length === 1) {
-      deleteMutation.mutate(deleteIds[0]);
-    } else {
-      deleteManyMutation.mutate(deleteIds);
-    }
+    if (deleteIds.length === 1) deleteMutation.mutate(deleteIds[0]);
+    else deleteManyMutation.mutate(deleteIds);
   };
 
-  // Map màu priority
   const priorityOrder: Record<string, number> = {
     Low: 1,
     Medium: 2,
     High: 3,
     Urgent: 4,
   };
-
   const columns = [
     {
       title: (
         <Checkbox
           checked={selectedIds.length === todos.length && todos.length > 0}
-          indeterminate={selectedIds.length > 0 && selectedIds.length < todos.length}
+          indeterminate={
+            selectedIds.length > 0 && selectedIds.length < todos.length
+          }
           onChange={(e) => {
-            if (e.target.checked) {
-              setSelectedIds(todos.map((todo) => todo.id));
-            } else {
-              setSelectedIds([]);
-            }
+            if (e.target.checked) setSelectedIds(todos.map((todo) => todo.id));
+            else setSelectedIds([]);
           }}
         >
-          Chọn
+          {t('todoApp.choose')}
         </Checkbox>
       ),
       dataIndex: 'id',
       width: 60,
       render: (id: number) => (
-        <Checkbox checked={selectedIds.includes(id)} onChange={() => handleSelect(id)} />
+        <Checkbox
+          checked={selectedIds.includes(id)}
+          onChange={() => handleSelect(id)}
+        />
       ),
     },
     {
-      title: 'Công việc',
+      title: t('todoApp.title'),
       dataIndex: 'text',
       className: 'todo-text',
       render: (_: string, todo: ITodo) =>
@@ -252,17 +246,17 @@ export default function TodoApp() {
         ),
     },
     {
-      title: 'Ngày tạo',
+      title: t('todoApp.createdAt'),
       dataIndex: 'createdAt',
       sorter: (a: ITodo, b: ITodo) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       render: (date: string) => new Date(date).toLocaleString('vi-VN'),
     },
     {
-      title: 'Deadline',
+      title: t('todoApp.deadline'),
       dataIndex: 'deadline',
       render: (date: string | null, todo: ITodo) => {
-        if (!date) return '.  .  .';
+        if (!date) return '...';
         const isExpired = new Date(date) < new Date() && !todo.completed;
         return (
           <span style={{ color: isExpired ? 'red' : '#000' }}>
@@ -272,32 +266,36 @@ export default function TodoApp() {
       },
     },
     {
-      title: 'Ưu tiên',
-      dataIndex: 'priority',
-      sorter: (a: ITodo, b: ITodo) =>
-        priorityOrder[a.priority] - priorityOrder[b.priority],
-      render: (priority: ITodo['priority']) => {
-        const colorMap: Record<ITodo['priority'], string> = {
-          Low: '#52c41a',
-          Medium: '#1890ff',
-          High: '#faad14',
-          Urgent: '#f5222d',
+      title: t("todoApp.priority"),
+      dataIndex: "priority",
+      sorter: (a: ITodo, b: ITodo) => priorityOrder[a.priority] - priorityOrder[b.priority],
+      render: (priority: ITodo["priority"]) => {
+        const colorMap: Record<ITodo["priority"], string> = {
+          Low: "#52c41a",
+          Medium: "#1890ff",
+          High: "#faad14",
+          Urgent: "#f5222d",
         };
+
+
+        const labelKey =
+          priority === "Low"
+            ? "low"
+            : priority === "Medium"
+              ? "medium"
+              : priority === "High"
+                ? "high"
+                : "urgent";
+
         return (
-          <span style={{ color: colorMap[priority], fontWeight: 'bold' }}>
-            {priority === 'Low'
-              ? 'Thấp'
-              : priority === 'Medium'
-                ? 'Trung bình'
-                : priority === 'High'
-                  ? 'Cao'
-                  : 'Khẩn cấp'}
+          <span style={{ color: colorMap[priority], fontWeight: "bold" }}>
+            {t(`todoApp.priorityLabels.${labelKey}`)}
           </span>
         );
       },
     },
     {
-      title: 'Hành động',
+      title: t('todoApp.action'),
       dataIndex: 'id',
       width: 120,
       render: (_: string, todo: ITodo) => (
@@ -335,7 +333,7 @@ export default function TodoApp() {
       <Header />
       <Card className="todo-card">
         <Title level={2} className="todo-title">
-          📝 Todo App
+          {t('todoApp.titlelogo')}
         </Title>
         <Weather />
         <Divider />
@@ -372,13 +370,19 @@ export default function TodoApp() {
         />
         <ConfirmModal
           open={modalOpen}
-          confirmLoading={updateMutation.isPending || deleteMutation.isPending || deleteManyMutation.isPending}
+          confirmLoading={
+            updateMutation.isPending ||
+            deleteMutation.isPending ||
+            deleteManyMutation.isPending
+          }
           modalText={
             modalType === 'save'
-              ? 'Bạn có muốn lưu công việc này không?'
-              : `Bạn có chắc muốn xóa ${deleteIds?.length || 0} công việc không?`
+              ? t('todoApp.saveConfirm')
+              : t('todoApp.deleteConfirm', { count: deleteIds?.length || 0 })
           }
-          onConfirm={modalType === 'save' ? handleSaveConfirm : handleDeleteConfirm}
+          onConfirm={
+            modalType === 'save' ? handleSaveConfirm : handleDeleteConfirm
+          }
           onCancel={() => {
             setModalOpen(false);
             setModalType(null);

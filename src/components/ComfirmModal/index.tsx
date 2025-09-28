@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface IConfirmModal {
   open: boolean;
@@ -20,19 +21,21 @@ const ConfirmModal: React.FC<IConfirmModal> = ({
   modalText,
   onConfirm,
   onCancel,
-  title = "Xác nhận",
-  okText = "Có",
-  cancelText = "Không",
+  title,
+  okText,
+  cancelText,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Modal
-      title={title}
+      title={title || t("confirmModal.title")}
       open={open}
       onOk={onConfirm}
       confirmLoading={confirmLoading}
       onCancel={onCancel}
-      okText={okText}
-      cancelText={cancelText}
+      okText={okText || t("confirmModal.ok")}
+      cancelText={cancelText || t("confirmModal.cancel")}
     >
       <p>{modalText}</p>
     </Modal>
