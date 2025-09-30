@@ -63,5 +63,28 @@
         "saveConfirm": "Bạn có muốn lưu công việc này không?",
         "deleteConfirm": "Bạn có chắc muốn xóa {{count}} công việc không?",
         "required": "Vui lòng nhập thông tin!"
+    },
+    "weather": {
+        "title": "🌦️ Thời tiết",
+        "selectProvince": "Tỉnh/Thành phố",
+        "selectDistrict": "Quận/Huyện",
+        "selectWard": "Phường/Xã",
+        "currentLocation": "Vị trí hiện tại",
+        "searchPlaceholder": "Nhập địa điểm cần tìm",
+        "humidity": "Độ ẩm",
+        "wind": "Gió",
+        "noData": "Không có dữ liệu",
+        "errors": {
+            "notFound": "Không tìm thấy tọa độ địa điểm",
+            "fetchError": "Lỗi khi lấy thời tiết cho địa điểm",
+            "locationName": "Không thể lấy tên địa điểm hiện tại",
+            "getLocation": "Không thể lấy vị trí hiện tại",
+            "districts": "Không thể tải danh sách quận/huyện",
+            "wards": "Không thể tải danh sách phường/xã",
+            "provinces": "Không thể tải danh sách tỉnh",
+            "emptyInput": "Vui lòng nhập địa điểm cần tìm!",
+            "tooShort": "Vui lòng nhập ít nhất 2 ký tự!",
+            "invalidChars": "Chỉ cho phép chữ cái, số, khoảng trắng và dấu gạch ngang!"
+        }
     }
 }

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Select, Button, Typography, Spin, message, Input } from "antd";
 import { EnvironmentOutlined, SearchOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 import "./index.scss";
 
 import { fetchWeather, IWeather } from "@/api/weatherApi";
@@ -19,6 +20,9 @@ const { Option } = Select;
 const { Search } = Input;
 
 export default function Weather() {
+    const { t } = useTranslation();
+    const [messageApi, contextHolder] = message.useMessage();
+
     const [loading, setLoading] = useState(false);
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [weather, setWeather] = useState<IWeather | null>(null);
@@ -37,7 +41,7 @@ export default function Weather() {
         try {
             const data = await geocodeAddress(address);
             if (!data.results?.length) {
-                message.error("Không tìm thấy tọa độ địa điểm");
+                messageApi.error(t("weather.errors.notFound"));
                 setLoading(false);
                 return;
             }
@@ -45,12 +49,11 @@ export default function Weather() {
             const weatherData = await fetchWeather(lat, lng, address);
             setWeather(weatherData);
         } catch {
-            message.error("Lỗi khi lấy thời tiết cho địa điểm");
+            messageApi.error(t("weather.errors.fetchError"));
         } finally {
             setLoading(false);
         }
     };
-
 
     const handleGetCurrentLocation = async () => {
         navigator.geolocation.getCurrentPosition(
@@ -59,7 +62,8 @@ export default function Weather() {
                 const lng = pos.coords.longitude;
                 try {
                     const data = await reverseGeocode(lat, lng);
-                    const fullAddress = data.results?.[0]?.formatted_address || "Vị trí hiện tại";
+                    const fullAddress =
+                        data.results?.[0]?.formatted_address || t("weather.currentLocation");
                     const weatherData = await fetchWeather(lat, lng, fullAddress);
                     setWeather(weatherData);
                     setSelectedProvince(null);
@@ -68,18 +72,18 @@ export default function Weather() {
                     setDistricts([]);
                     setWards([]);
                 } catch {
-                    message.error("Không thể lấy tên địa điểm hiện tại");
+                    messageApi.error(t("weather.errors.locationName"));
                     const weatherData = await fetchWeather(lat, lng);
                     setWeather(weatherData);
                 }
             },
             () => {
-                message.error("Không thể lấy vị trí hiện tại");
+                messageApi.error(t("weather.errors.getLocation"));
             }
         );
     };
 
-    // tinh
+    // tỉnh
     const handleProvinceChange = async (provinceCode: string | null) => {
         setSelectedProvince(provinceCode);
         setSelectedDistrict(null);
@@ -96,21 +100,23 @@ export default function Weather() {
             const districtsData = await fetchDistricts(provinceCode);
             setDistricts(districtsData);
 
-            const provinceName = provinces.find((p) => p.value === provinceCode)?.label || "";
+            const provinceName =
+                provinces.find((p) => p.value === provinceCode)?.label || "";
             fetchWeatherByAddress(provinceName);
         } catch {
-            message.error("Không thể tải danh sách quận/huyện");
+            messageApi.error(t("weather.errors.districts"));
         }
     };
 
-    // Cquanuận
+    // huyện
     const handleDistrictChange = async (districtCode: string | null) => {
         setSelectedDistrict(districtCode);
         setSelectedWard(null);
         setWards([]);
 
         if (!districtCode) {
-            const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+            const provinceName =
+                provinces.find((p) => p.value === selectedProvince)?.label || "";
             fetchWeatherByAddress(provinceName);
             return;
         }
@@ -119,11 +125,13 @@ export default function Weather() {
             const wardsData = await fetchWards(districtCode);
             setWards(wardsData);
 
-            const districtName = districts.find((d) => d.value === districtCode)?.label || "";
-            const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+            const districtName =
+                districts.find((d) => d.value === districtCode)?.label || "";
+            const provinceName =
+                provinces.find((p) => p.value === selectedProvince)?.label || "";
             fetchWeatherByAddress(`${districtName}, ${provinceName}`);
         } catch {
-            message.error("Không thể tải danh sách phường/xã");
+            messageApi.error(t("weather.errors.wards"));
         }
     };
 
@@ -131,26 +139,49 @@ export default function Weather() {
     const handleWardChange = (wardCode: string | null) => {
         setSelectedWard(wardCode);
 
-        const districtName = districts.find((d) => d.value === selectedDistrict)?.label || "";
-        const provinceName = provinces.find((p) => p.value === selectedProvince)?.label || "";
+        const districtName =
+            districts.find((d) => d.value === selectedDistrict)?.label || "";
+        const provinceName =
+            provinces.find((p) => p.value === selectedProvince)?.label || "";
 
         if (!wardCode) {
-            fetchWeatherByAddress([districtName, provinceName].filter(Boolean).join(", "));
+            fetchWeatherByAddress(
+                [districtName, provinceName].filter(Boolean).join(", ")
+            );
             return;
         }
 
         const wardName = wards.find((w) => w.value === wardCode)?.label || "";
-        fetchWeatherByAddress([wardName, districtName, provinceName].filter(Boolean).join(", "));
+        fetchWeatherByAddress(
+            [wardName, districtName, provinceName].filter(Boolean).join(", ")
+        );
     };
 
-
     const handleSearchLocation = async (value: string) => {
-        const address = value.trim();
-        if (!address) return;
+        let address = value.trim();
+
+        if (!address) {
+            messageApi.warning(t("weather.errors.emptyInput"));
+            return;
+        }
+
+        if (address.length < 2) {
+            messageApi.warning(t("weather.errors.tooShort"));
+            return;
+        }
+
+        const validPattern = /^[\p{L}\p{N}\s-]+$/u;
+        if (!validPattern.test(address)) {
+            messageApi.warning(
+                t("weather.errors.invalidChars"));
+            return;
+        }
+
         try {
             await fetchWeatherByAddress(address);
         } catch (err) {
             console.error("Lỗi khi tìm kiếm địa điểm:", err);
+            messageApi.error(t("weather.errors.fetchError"));
         }
     };
 
@@ -161,7 +192,7 @@ export default function Weather() {
                 const provincesData = await fetchProvinces();
                 setProvinces(provincesData);
             } catch {
-                message.error("Không thể tải danh sách tỉnh");
+                messageApi.error(t("weather.errors.provinces"));
             } finally {
                 setLoadingLocation(false);
             }
@@ -171,10 +202,13 @@ export default function Weather() {
     }, []);
 
     return (
-        <Card title="🌦️ Thời tiết" className="weather-card">
+        <Card title={t("weather.title")} className="weather-card">
+
+            {contextHolder}
+
             <div className="weather-actions" style={{ marginBottom: 16 }}>
                 <Select
-                    placeholder="Chọn Tỉnh/Thành phố"
+                    placeholder={t("weather.selectProvince")}
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleProvinceChange}
                     allowClear
@@ -189,7 +223,7 @@ export default function Weather() {
                 </Select>
 
                 <Select
-                    placeholder="Chọn Quận/Huyện"
+                    placeholder={t("weather.selectDistrict")}
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleDistrictChange}
                     allowClear
@@ -204,7 +238,7 @@ export default function Weather() {
                 </Select>
 
                 <Select
-                    placeholder="Chọn Phường/Xã"
+                    placeholder={t("weather.selectWard")}
                     style={{ width: 180, marginRight: 8 }}
                     onChange={handleWardChange}
                     allowClear
@@ -219,13 +253,13 @@ export default function Weather() {
                 </Select>
 
                 <Button icon={<EnvironmentOutlined />} onClick={handleGetCurrentLocation}>
-                    Vị trí hiện tại
+                    {t("weather.currentLocation")}
                 </Button>
             </div>
 
             <div className="weather-search" style={{ marginBottom: 16, textAlign: "center" }}>
                 <Search
-                    placeholder="Nhập địa điểm cần tìm"
+                    placeholder={t("weather.searchPlaceholder")}
                     allowClear
                     enterButton={<SearchOutlined />}
                     onSearch={handleSearchLocation}
@@ -252,16 +286,16 @@ export default function Weather() {
                                 {Math.round(weather.temp)}°C
                             </Text>
                             <div>
-                                <Text>💧 Độ ẩm: {weather.humidity}%</Text>
+                                <Text>💧 {t("weather.humidity")}: {weather.humidity}%</Text>
                             </div>
                             <div>
-                                <Text>🌬️ Gió: {weather.wind} m/s</Text>
+                                <Text>🌬️ {t("weather.wind")}: {weather.wind} m/s</Text>
                             </div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <Text>Không có dữ liệu</Text>
+                <Text>{t("weather.noData")}</Text>
             )}
         </Card>
     );

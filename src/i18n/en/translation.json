@@ -63,5 +63,28 @@
         "saveConfirm": "Do you want to save this task?",
         "deleteConfirm": "Are you sure you want to delete {{count}} task(s)?",
         "required": "Please enter information!"
+    },
+    "weather": {
+        "title": "🌦️ Weather",
+        "selectProvince": "Province/City",
+        "selectDistrict": "District",
+        "selectWard": "Ward",
+        "currentLocation": "Current Location",
+        "searchPlaceholder": "Enter location to search",
+        "humidity": "Humidity",
+        "wind": "Wind",
+        "noData": "No data",
+        "errors": {
+            "notFound": "Coordinates not found for this location",
+            "fetchError": "Error fetching weather for this location",
+            "locationName": "Unable to retrieve current location name",
+            "getLocation": "Unable to get current location",
+            "districts": "Unable to load districts",
+            "wards": "Unable to load wards",
+            "provinces": "Unable to load provinces",
+            "emptyInput": "Please enter a location to search!",
+            "tooShort": "Please enter at least 2 characters!",
+            "invalidChars": "Only letters, numbers, spaces, and hyphens are allowed!"
+        }
     }
 }
