@@ -22,6 +22,8 @@ export default function LanguageSwitch() {
         >
             <Option value="vi">Tiếng Việt</Option>
             <Option value="en">English</Option>
+            <Option value="th">ไทย (Thai)</Option>
+            <Option value="ja">日本語 (Japanese)</Option>
         </Select>
     );
 }

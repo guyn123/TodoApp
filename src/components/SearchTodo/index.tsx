@@ -25,7 +25,8 @@ export default function SearchTodo({ onSearch }: SearchTodoProps) {
     };
 
     return (
-        <div className="search-wrapper">
+        <div>
+            <label style={{ display: 'block', marginBottom: 8 }}>{t('search.searchTodo')}</label>
             <Input
                 className="search-input"
                 placeholder={t("search.placeholder")}
@@ -35,7 +36,7 @@ export default function SearchTodo({ onSearch }: SearchTodoProps) {
                 allowClear
                 prefix={<SearchOutlined style={{ color: "#9b0b0bff" }} />}
             />
-        </div>
+        </div >
     );
 }
 

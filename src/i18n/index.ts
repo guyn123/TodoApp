@@ -5,10 +5,13 @@ import { initReactI18next } from 'react-i18next';
 
 import en from './en/translation.json';
 import vi from './vi/translation.json';
-
+import th from './th/translation.json';
+import ja from './ja/translation.json';
 const resources = {
     vi: { translation: vi },
     en: { translation: en },
+    th: { translation: th },
+    ja: { translation: ja },
 };
 
 // // lấy ngôn ngữ đã lưu trong localStorage (nếu có), mặc định là 'vi'
@@ -21,9 +24,7 @@ i18n
         lng: 'vi',
         // lng: savedLang || 'en',
         fallbackLng: 'en',
-        interpolation: {
-            escapeValue: false,
-        },
+        interpolation: { escapeValue: false },
     });
 
 export default i18n;

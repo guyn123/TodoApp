@@ -4,6 +4,7 @@
         "logout": "Logout"
     },
     "todo": {
+        "addTodo": "Add new task:",
         "addSuccess": "Task added successfully!",
         "addError": "Could not add task",
         "required": "Please enter a task!",
@@ -24,12 +25,54 @@
         "noTasksToComplete": "No tasks to complete!"
     },
     "auth": {
-        "loginRequired": "Please log in!"
+        "loginRequired": "Please log in!",
+        "login": {
+            "title": "Login",
+            "subtitle": "To continue accessing your account",
+            "email": "Email",
+            "emailPlaceholder": "Enter your email",
+            "emailRequired": "Please enter your email",
+            "emailInvalid": "Invalid email",
+            "password": "Password",
+            "passwordPlaceholder": "Enter your password",
+            "passwordRequired": "Please enter your password",
+            "passwordMin": "Password must be at least 6 characters",
+            "remember": "Remember me",
+            "forgotPassword": "Forgot password?",
+            "submit": "LOGIN",
+            "registerPrompt": "Don’t have an account?",
+            "register": "Register",
+            "home": "Home",
+            "success": "Login successful!",
+            "error": "Incorrect email or password!"
+        },
+        "register": {
+            "title": "Create Account",
+            "success": "Registration successful! Please login.",
+            "error": "Email already exists or registration error!",
+            "email": "Email",
+            "emailPlaceholder": "Enter email",
+            "emailRequired": "Please enter your email",
+            "emailInvalid": "Invalid email",
+            "password": "Password",
+            "passwordPlaceholder": "Enter password",
+            "passwordRequired": "Please enter your password",
+            "passwordMin": "Password must be at least 6 characters",
+            "confirmPassword": "Confirm Password",
+            "confirmPasswordRequired": "Please confirm your password",
+            "confirmPasswordMismatch": "Passwords do not match",
+            "confirmPasswordPlaceholder": "Confirm password",
+            "submit": "REGISTER",
+            "alreadyHaveAccount": "Already have an account?",
+            "login": "Login"
+        }
     },
     "search": {
+        "searchTodo": "Search:",
         "placeholder": "Enter keyword to search..."
     },
     "filter": {
+        "title": "Status Filter:",
         "all": "All",
         "active": "Active",
         "completed": "Completed",

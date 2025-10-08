@@ -4,6 +4,7 @@
         "logout": "Đăng xuất"
     },
     "todo": {
+        "addTodo": "Thêm công việc mới:",
         "addSuccess": "Thêm công việc thành công!",
         "addError": "Không thể thêm công việc",
         "required": "Vui lòng nhập thông tin!",
@@ -24,12 +25,54 @@
         "noTasksToComplete": "Không có công việc nào để hoàn thành!"
     },
     "auth": {
-        "loginRequired": "Vui lòng đăng nhập!"
+        "loginRequired": "Vui lòng đăng nhập!",
+        "login": {
+            "title": "Đăng nhập",
+            "subtitle": "Để tiếp tục truy cập tài khoản của bạn",
+            "email": "Email",
+            "emailPlaceholder": "Nhập email",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không hợp lệ",
+            "password": "Mật khẩu",
+            "passwordPlaceholder": "Nhập mật khẩu",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
+            "remember": "Duy trì đăng nhập",
+            "forgotPassword": "Quên mật khẩu?",
+            "submit": "ĐĂNG NHẬP",
+            "registerPrompt": "Chưa có tài khoản?",
+            "register": "Tạo tài khoản",
+            "home": "Trang chủ",
+            "success": "Đăng nhập thành công!",
+            "error": "Email hoặc mật khẩu không đúng!"
+        },
+        "register": {
+            "title": "Tạo tài khoản",
+            "success": "Đăng ký thành công! Vui lòng đăng nhập.",
+            "error": "Email đã tồn tại hoặc lỗi khi đăng ký!",
+            "email": "Email",
+            "emailPlaceholder": "Nhập email",
+            "emailRequired": "Vui lòng nhập email",
+            "emailInvalid": "Email không hợp lệ",
+            "password": "Mật khẩu",
+            "passwordPlaceholder": "Nhập mật khẩu",
+            "passwordRequired": "Vui lòng nhập mật khẩu",
+            "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
+            "confirmPassword": "Xác nhận mật khẩu",
+            "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+            "confirmPasswordMismatch": "Mật khẩu không khớp",
+            "confirmPasswordPlaceholder": "Xác nhận mật khẩu",
+            "submit": "ĐĂNG KÝ",
+            "alreadyHaveAccount": "Đã có tài khoản?",
+            "login": "Đăng nhập"
+        }
     },
     "search": {
+        "searchTodo": "Tìm kiếm:",
         "placeholder": "Nhập từ khóa để tìm..."
     },
     "filter": {
+        "title": "Bộ lọc trạng thái:",
         "all": "Tất cả",
         "active": "Chưa hoàn thành",
         "completed": "Đã hoàn thành",

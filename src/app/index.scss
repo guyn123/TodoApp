@@ -4,7 +4,7 @@
   align-items: flex-start;
   padding: 80px 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #95a3e9, #f690a4);
+  background: linear-gradient(135deg, #101111, #f5f5f5);
 
   // pagination nhỏ gọn
   .ant-pagination {
@@ -30,27 +30,31 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     transition: transform 0.2s ease;
 
+    // .todo-title {
+    //   text-align: center;
+    //   font-size: 25px;
+    //   font-weight: bold;
+    //   color: #636a6a;
+    //   margin-bottom: 8px;
+    // }
+
     .todo-title {
       text-align: center;
       font-size: 25px;
       font-weight: bold;
-      color: #a83fff;
+      color: #636a6a;
       margin-bottom: 8px;
-      cursor: pointer;
-      transition: transform 0.5s ease;
-
-      &:hover {
-        animation: spin 1s linear infinite;
-      }
+      width: 30ch;
+      font-family: monospace;
+      text-wrap: nowrap;
+      overflow: hidden;
+      margin: 0 auto;
+      animation: typing 2s steps(30) infinite alternate-reverse;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
+    @keyframes typing {
+      from {
+        width: 0ch;
       }
     }
 

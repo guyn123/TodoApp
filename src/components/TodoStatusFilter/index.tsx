@@ -8,17 +8,20 @@ function TodoStatusFilter() {
   const { t } = useTranslation();
 
   return (
-    <Select
-      className="todo-filter"
-      value={filter}
-      onChange={setFilter}
-      options={[
-        { value: 'all', label: t('filter.all') },
-        { value: 'active', label: t('filter.active') },
-        { value: 'completed', label: t('filter.completed') },
-        { value: 'expired', label: t('filter.expired') },
-      ]}
-    />
+    <div>
+      <label>{t('filter.title')}</label>
+      <Select
+        className="todo-filter"
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { value: 'all', label: t('filter.all') },
+          { value: 'active', label: t('filter.active') },
+          { value: 'completed', label: t('filter.completed') },
+          { value: 'expired', label: t('filter.expired') },
+        ]}
+      />
+    </div>
   );
 }
 

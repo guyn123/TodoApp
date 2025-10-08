@@ -51,36 +51,39 @@ function AddTodoForm({ messageApi }: { messageApi: any }) {
   };
 
   return (
-    <Space.Compact className="todo-input-group" style={{ width: '100%' }}>
-      <Input
-        placeholder={t('todo.inputPlaceholder')}
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        onPressEnter={handleAdd}
-        style={{ width: '35%' }}
-      />
-      <DatePicker
-        placeholder={t('todo.deadline')}
-        value={deadline}
-        onChange={(val) => setDeadline(val)}
-        style={{ width: '35%' }}
-        showTime
-        format="DD/MM/YYYY HH:mm"
-      />
-      <Select
-        value={priority}
-        onChange={(val) => setPriority(val)}
-        style={{ width: '20%' }}
-      >
-        <Option value="Low">{t('todo.priority.low')}</Option>
-        <Option value="Medium">{t('todo.priority.medium')}</Option>
-        <Option value="High">{t('todo.priority.high')}</Option>
-        <Option value="Urgent">{t('todo.priority.urgent')}</Option>
-      </Select>
-      <Button type="primary" onClick={handleAdd} loading={createMutation.isPending}>
-        {t('todo.addButton')}
-      </Button>
-    </Space.Compact>
+    <div>
+      <label style={{ display: 'block', marginBottom: 8 }}>{t('todo.addTodo')}</label>
+      <Space.Compact className="todo-input-group" style={{ width: '100%' }}>
+        <Input
+          placeholder={t('todo.inputPlaceholder')}
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+          onPressEnter={handleAdd}
+          style={{ width: '35%' }}
+        />
+        <DatePicker
+          placeholder={t('todo.deadline')}
+          value={deadline}
+          onChange={(val) => setDeadline(val)}
+          style={{ width: '35%' }}
+          showTime
+          format="DD/MM/YYYY HH:mm"
+        />
+        <Select
+          value={priority}
+          onChange={(val) => setPriority(val)}
+          style={{ width: '20%' }}
+        >
+          <Option value="Low">{t('todo.priority.low')}</Option>
+          <Option value="Medium">{t('todo.priority.medium')}</Option>
+          <Option value="High">{t('todo.priority.high')}</Option>
+          <Option value="Urgent">{t('todo.priority.urgent')}</Option>
+        </Select>
+        <Button type="primary" onClick={handleAdd} loading={createMutation.isPending}>
+          {t('todo.addButton')}
+        </Button>
+      </Space.Compact>
+    </div>
   );
 }
 

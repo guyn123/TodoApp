@@ -1,0 +1,133 @@
+{
+    "header": {
+        "login": "เข้าสู่ระบบ",
+        "logout": "ออกจากระบบ"
+    },
+    "todo": {
+        "addTodo": "เพิ่มงานใหม่:",
+        "addSuccess": "เพิ่มงานสำเร็จ!",
+        "addError": "ไม่สามารถเพิ่มงานได้",
+        "required": "กรุณากรอกข้อมูล!",
+        "loginRequired": "กรุณาเข้าสู่ระบบ!",
+        "inputPlaceholder": "ป้อนงาน...",
+        "deadline": "กำหนดส่ง",
+        "priority": {
+            "low": "ต่ำ",
+            "medium": "ปานกลาง",
+            "high": "สูง",
+            "urgent": "ด่วน"
+        },
+        "addButton": "เพิ่ม",
+        "complete": "เสร็จสิ้น",
+        "delete": "ลบ",
+        "completeSuccess": "ทำงานเสร็จสิ้นเรียบร้อย!",
+        "completeError": "ไม่สามารถทำงานให้เสร็จได้!",
+        "noTasksToComplete": "ไม่มีงานที่ต้องทำให้เสร็จ!"
+    },
+    "auth": {
+        "loginRequired": "กรุณาเข้าสู่ระบบ!",
+        "login": {
+            "title": "เข้าสู่ระบบ",
+            "subtitle": "เพื่อเข้าถึงบัญชีของคุณต่อไป",
+            "email": "อีเมล",
+            "emailPlaceholder": "กรอกอีเมล",
+            "emailRequired": "กรุณากรอกอีเมล",
+            "emailInvalid": "อีเมลไม่ถูกต้อง",
+            "password": "รหัสผ่าน",
+            "passwordPlaceholder": "กรอกรหัสผ่าน",
+            "passwordRequired": "กรุณากรอกรหัสผ่าน",
+            "passwordMin": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+            "remember": "จดจำการเข้าสู่ระบบ",
+            "forgotPassword": "ลืมรหัสผ่าน?",
+            "submit": "เข้าสู่ระบบ",
+            "registerPrompt": "ยังไม่มีบัญชี?",
+            "register": "สร้างบัญชี",
+            "home": "หน้าแรก",
+            "success": "เข้าสู่ระบบสำเร็จ!",
+            "error": "อีเมลหรือรหัสผ่านไม่ถูกต้อง!"
+        },
+        "register": {
+            "title": "สร้างบัญชี",
+            "success": "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ",
+            "error": "อีเมลนี้มีอยู่แล้วหรือเกิดข้อผิดพลาด!",
+            "email": "อีเมล",
+            "emailPlaceholder": "กรอกอีเมล",
+            "emailRequired": "กรุณากรอกอีเมล",
+            "emailInvalid": "อีเมลไม่ถูกต้อง",
+            "password": "รหัสผ่าน",
+            "passwordPlaceholder": "กรอกรหัสผ่าน",
+            "passwordRequired": "กรุณากรอกรหัสผ่าน",
+            "passwordMin": "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร",
+            "confirmPassword": "ยืนยันรหัสผ่าน",
+            "confirmPasswordRequired": "กรุณายืนยันรหัสผ่าน",
+            "confirmPasswordMismatch": "รหัสผ่านไม่ตรงกัน",
+            "confirmPasswordPlaceholder": "ยืนยันรหัสผ่าน",
+            "submit": "สมัครสมาชิก",
+            "alreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
+            "login": "เข้าสู่ระบบ"
+        }
+    },
+    "search": {
+        "searchTodo": "ค้นหา:",
+        "placeholder": "กรอกคำค้นหา..."
+    },
+    "filter": {
+        "title": "ตัวกรองสถานะ:",
+        "all": "ทั้งหมด",
+        "active": "ยังไม่เสร็จ",
+        "completed": "เสร็จแล้ว",
+        "expired": "หมดเวลา"
+    },
+    "confirmModal": {
+        "title": "ยืนยัน",
+        "ok": "ตกลง",
+        "cancel": "ยกเลิก"
+    },
+    "todoApp": {
+        "titlelogo": "📝 จัดการงาน",
+        "title": "งาน",
+        "createdAt": "วันที่สร้าง",
+        "deadline": "กำหนดส่ง",
+        "priority": "ลำดับความสำคัญ",
+        "choose": "เลือก",
+        "action": "การกระทำ",
+        "priorityLabels": {
+            "low": "ต่ำ",
+            "medium": "ปานกลาง",
+            "high": "สูง",
+            "urgent": "ด่วน"
+        },
+        "expired": "หมดเวลา",
+        "editSuccess": "แก้ไขงานสำเร็จ!",
+        "editError": "ไม่สามารถอัปเดตงานได้",
+        "deleteSuccess": "ลบงานสำเร็จ!",
+        "deleteError": "ไม่สามารถลบงานได้",
+        "deleteManyError": "ไม่สามารถลบหลายงานได้",
+        "saveConfirm": "คุณต้องการบันทึกงานนี้หรือไม่?",
+        "deleteConfirm": "คุณแน่ใจหรือไม่ว่าต้องการลบงาน {{count}} รายการ?",
+        "required": "กรุณากรอกข้อมูล!"
+    },
+    "weather": {
+        "title": "🌦️ สภาพอากาศ",
+        "selectProvince": "จังหวัด",
+        "selectDistrict": "อำเภอ",
+        "selectWard": "ตำบล",
+        "currentLocation": "ตำแหน่งปัจจุบัน",
+        "searchPlaceholder": "ป้อนสถานที่ที่ต้องการค้นหา",
+        "humidity": "ความชื้น",
+        "wind": "ลม",
+        "noData": "ไม่มีข้อมูล",
+        "errors": {
+            "notFound": "ไม่พบพิกัดของสถานที่",
+            "fetchError": "เกิดข้อผิดพลาดในการดึงข้อมูลสภาพอากาศ",
+            "locationName": "ไม่สามารถดึงชื่อสถานที่ปัจจุบันได้",
+            "getLocation": "ไม่สามารถดึงตำแหน่งปัจจุบันได้",
+            "districts": "ไม่สามารถโหลดรายชื่ออำเภอได้",
+            "wards": "ไม่สามารถโหลดรายชื่อตำบลได้",
+            "provinces": "ไม่สามารถโหลดรายชื่อจังหวัดได้",
+            "emptyInput": "กรุณากรอกสถานที่ที่ต้องการค้นหา!",
+            "tooShort": "กรุณากรอกอย่างน้อย 2 ตัวอักษร!",
+            "invalidChars": "อนุญาตเฉพาะตัวอักษร ตัวเลข ช่องว่าง และขีดกลางเท่านั้น!"
+        }
+    }
+}

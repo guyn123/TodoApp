@@ -1,0 +1,133 @@
+{
+    "header": {
+        "login": "ログイン",
+        "logout": "ログアウト"
+    },
+    "todo": {
+        "addTodo": "新しいタスクを追加：",
+        "addSuccess": "タスクを追加しました！",
+        "addError": "タスクを追加できません",
+        "required": "情報を入力してください！",
+        "loginRequired": "ログインしてください！",
+        "inputPlaceholder": "タスクを入力...",
+        "deadline": "締め切り",
+        "priority": {
+            "low": "低",
+            "medium": "中",
+            "high": "高",
+            "urgent": "緊急"
+        },
+        "addButton": "追加",
+        "complete": "完了",
+        "delete": "削除",
+        "completeSuccess": "タスクを完了しました！",
+        "completeError": "タスクを完了できません！",
+        "noTasksToComplete": "完了するタスクがありません！"
+    },
+    "auth": {
+        "loginRequired": "ログインしてください！",
+        "login": {
+            "title": "ログイン",
+            "subtitle": "アカウントにアクセスを続けるには",
+            "email": "メールアドレス",
+            "emailPlaceholder": "メールを入力",
+            "emailRequired": "メールを入力してください",
+            "emailInvalid": "メールアドレスが正しくありません",
+            "password": "パスワード",
+            "passwordPlaceholder": "パスワードを入力",
+            "passwordRequired": "パスワードを入力してください",
+            "passwordMin": "パスワードは6文字以上でなければなりません",
+            "remember": "ログイン状態を保持",
+            "forgotPassword": "パスワードをお忘れですか？",
+            "submit": "ログイン",
+            "registerPrompt": "アカウントをお持ちでないですか？",
+            "register": "新規登録",
+            "home": "ホーム",
+            "success": "ログイン成功！",
+            "error": "メールまたはパスワードが間違っています！"
+        },
+        "register": {
+            "title": "新規登録",
+            "success": "登録が完了しました！ログインしてください。",
+            "error": "メールが既に存在するか、登録エラーが発生しました！",
+            "email": "メールアドレス",
+            "emailPlaceholder": "メールを入力",
+            "emailRequired": "メールを入力してください",
+            "emailInvalid": "メールアドレスが正しくありません",
+            "password": "パスワード",
+            "passwordPlaceholder": "パスワードを入力",
+            "passwordRequired": "パスワードを入力してください",
+            "passwordMin": "パスワードは6文字以上でなければなりません",
+            "confirmPassword": "パスワード確認",
+            "confirmPasswordRequired": "パスワードを確認してください",
+            "confirmPasswordMismatch": "パスワードが一致しません",
+            "confirmPasswordPlaceholder": "パスワードを確認",
+            "submit": "登録",
+            "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+            "login": "ログイン"
+        }
+    },
+    "search": {
+        "searchTodo": "検索：",
+        "placeholder": "検索キーワードを入力..."
+    },
+    "filter": {
+        "title": "状態フィルター:",
+        "all": "すべて",
+        "active": "未完了",
+        "completed": "完了済み",
+        "expired": "期限切れ"
+    },
+    "confirmModal": {
+        "title": "確認",
+        "ok": "はい",
+        "cancel": "いいえ"
+    },
+    "todoApp": {
+        "titlelogo": "📝 タスク管理",
+        "title": "タスク",
+        "createdAt": "作成日",
+        "deadline": "締め切り",
+        "priority": "優先度",
+        "choose": "選択",
+        "action": "操作",
+        "priorityLabels": {
+            "low": "低",
+            "medium": "中",
+            "high": "高",
+            "urgent": "緊急"
+        },
+        "expired": "期限切れ",
+        "editSuccess": "タスクを編集しました！",
+        "editError": "タスクを更新できません",
+        "deleteSuccess": "タスクを削除しました！",
+        "deleteError": "タスクを削除できません",
+        "deleteManyError": "複数のタスクを削除できません",
+        "saveConfirm": "このタスクを保存しますか？",
+        "deleteConfirm": "{{count}} 件のタスクを削除してもよろしいですか？",
+        "required": "情報を入力してください！"
+    },
+    "weather": {
+        "title": "🌦️ 天気",
+        "selectProvince": "都道府県",
+        "selectDistrict": "市区町村",
+        "selectWard": "町・村",
+        "currentLocation": "現在地",
+        "searchPlaceholder": "検索する場所を入力",
+        "humidity": "湿度",
+        "wind": "風",
+        "noData": "データなし",
+        "errors": {
+            "notFound": "場所の座標が見つかりません",
+            "fetchError": "天気情報を取得できませんでした",
+            "locationName": "現在地の名前を取得できません",
+            "getLocation": "現在地を取得できません",
+            "districts": "市区町村リストを読み込めません",
+            "wards": "町・村リストを読み込めません",
+            "provinces": "都道府県リストを読み込めません",
+            "emptyInput": "検索する場所を入力してください！",
+            "tooShort": "2文字以上入力してください！",
+            "invalidChars": "文字、数字、スペース、ハイフンのみ使用できます！"
+        }
+    }
+}
